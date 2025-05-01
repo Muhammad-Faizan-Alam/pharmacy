@@ -1,12 +1,12 @@
 import React from "react";
-
+import Navbar from "../components/Navbar";
+import { MedicineCarousel } from "../components/MedicineCarousel";
 const page = () => {
   return (
-    <div>
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus quo aut
-      omnis necessitatibus dolore explicabo impedit culpa similique nostrum!
-      Libero quod quia magnam dignissimos eius atque modi eligendi quos ad.
-    </div>
+    <>
+      <Navbar />
+      <MedicineCarousel />
+    </>
   );
 };
 
