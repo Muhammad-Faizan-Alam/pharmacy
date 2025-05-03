@@ -1,24 +1,22 @@
 "use client";
-// components/Navbar.js
-import Link from 'next/link';
-import { useState } from 'react';
-import { FiSearch, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import Link from "next/link";
+import { useState } from "react";
+import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
 
   const categories = [
-    'Medicines',
-    'Vitamins & Supplements',
-    'Medicated Cosmetics',
-    'Surgical & Support Braces',
-    'Medical Devices',
-    'Personal Care',
-    'Skin Care',
-    'Baby & Child',
-    'Herbal Medicines',
-   
+    "Medicines",
+    "Vitamins & Supplements",
+    "Medicated Cosmetics",
+    "Surgical & Support Braces",
+    "Medical Devices",
+    "Personal Care",
+    "Skin Care",
   ];
 
   return (
@@ -27,10 +25,16 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/" className="text-xl font-bold">
-            <span className="text-white">MediCare</span>
-            <span className="text-teal-200">+</span>
+            <div className="flex items-center">
+              <img
+                src="/asset/logo.png"
+                alt="Logo"
+                className="h-16 w-16 mr-2"
+              />
+              <span className="text-teal-200">+</span>
+              <span className="text-white">MediCare</span>
+            </div>
           </Link>
-          <span className="ml-2 text-sm hidden md:block">CHEMIST & SUPER STORE</span>
         </div>
 
         {/* Search Bar - Desktop */}
@@ -51,11 +55,14 @@ const Navbar = () => {
 
         {/* User Auth */}
         <div className="flex items-center space-x-4">
-          <Link href="/login" className="hidden md:flex items-center hover:text-teal-200 transition">
+          <Link
+            href="/login"
+            className="hidden md:flex items-center hover:text-teal-200 transition"
+          >
             <FiUser className="mr-1" />
-            <span className='font-semibold'>Sign In</span>
+            <span className="font-semibold">Sign In</span>
           </Link>
-          <button 
+          <button
             className="md:hidden text-white focus:outline-none"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
@@ -67,12 +74,21 @@ const Navbar = () => {
       {/* Category Navigation */}
       <nav className="bg-teal-800 hidden md:block">
         <div className="container mx-auto px-4">
-          <ul className="flex overflow-x-auto py-2 hide-scrollbar">
+          <ul className="flex overflow-x-auto py-2 gap-3 justify-between hide-scrollbar">
             {categories.map((category, index) => (
               <li key={index} className="whitespace-nowrap">
-                <Link 
-                  href={`/category/${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-                  className="px-3 py-1 text-sm hover:bg-teal-700 rounded transition block"
+                <Link
+                  href={
+                    category === "Medicines"
+                      ? "/medicines"
+                      : `/category/${category
+                          .toLowerCase()
+                          .replace(/ & /g, "-")
+                          .replace(/ /g, "-")}`
+                  }
+                  className={`px-3 py-1 text-sm hover:bg-teal-700 rounded transition block ${
+                    pathname === "/medicines" ? "bg-teal-700" : ""
+                  }`}
                 >
                   {category}
                 </Link>
@@ -105,8 +121,15 @@ const Navbar = () => {
           <ul className="py-2">
             {categories.map((category, index) => (
               <li key={index}>
-                <Link 
-                  href={`/category/${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
+                <Link
+                  href={
+                    category === "Medicines"
+                      ? "/medicines"
+                      : `/category/${category
+                          .toLowerCase()
+                          .replace(/ & /g, "-")
+                          .replace(/ /g, "-")}`
+                  }
                   className="block px-6 py-3 hover:bg-teal-700 transition"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -118,8 +141,8 @@ const Navbar = () => {
 
           {/* Mobile Auth */}
           <div className="p-4 border-t border-teal-700">
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="flex items-center justify-center py-2 px-4 bg-teal-600 rounded hover:bg-teal-700 transition"
               onClick={() => setIsMenuOpen(false)}
             >
