@@ -2,22 +2,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
-import { usePathname } from "next/navigation";
+import NavbarMedicine from "./navbarmedicne";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const pathname = usePathname();
-
-  const categories = [
-    "Medicines",
-    "Vitamins & Supplements",
-    "Medicated Cosmetics",
-    "Surgical & Support Braces",
-    "Medical Devices",
-    "Personal Care",
-    "Skin Care",
-  ];
 
   return (
     <header className="bg-teal-700 text-white shadow-md">
@@ -43,7 +32,7 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search entire store here..."
-              className="w-full py-2 px-4 border-2 rounded-full text-gray-800 focus:outline-none"
+              className="w-full py-2 px-4 border-2 border-white rounded-full text-gray-800 focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -71,32 +60,10 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Category Navigation */}
-      <nav className="bg-teal-800 hidden md:block">
-        <div className="container mx-auto px-4">
-          <ul className="flex overflow-x-auto py-2 gap-3 justify-between hide-scrollbar">
-            {categories.map((category, index) => (
-              <li key={index} className="whitespace-nowrap">
-                <Link
-                  href={
-                    category === "Medicines"
-                      ? "/medicines"
-                      : `/category/${category
-                          .toLowerCase()
-                          .replace(/ & /g, "-")
-                          .replace(/ /g, "-")}`
-                  }
-                  className={`px-3 py-1 text-sm hover:bg-teal-700 rounded transition block ${
-                    pathname === "/medicines" ? "bg-teal-700" : ""
-                  }`}
-                >
-                  {category}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
+      {/* Desktop Category Navigation */}
+      <div className="hidden md:block">
+        <NavbarMedicine />
+      </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
@@ -117,27 +84,10 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Categories */}
-          <ul className="py-2">
-            {categories.map((category, index) => (
-              <li key={index}>
-                <Link
-                  href={
-                    category === "Medicines"
-                      ? "/medicines"
-                      : `/category/${category
-                          .toLowerCase()
-                          .replace(/ & /g, "-")
-                          .replace(/ /g, "-")}`
-                  }
-                  className="block px-6 py-3 hover:bg-teal-700 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {category}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {/* Mobile Categories - Using NavbarMedicine's mobile view */}
+          <div className="p-4">
+            <NavbarMedicine mobileView />
+          </div>
 
           {/* Mobile Auth */}
           <div className="p-4 border-t border-teal-700">
