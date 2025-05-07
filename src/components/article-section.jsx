@@ -31,7 +31,7 @@ const ArticlesSection = () => {
   ];
 
   return (
-    <div className="flex flex-wrap px-11 py-12 gap-5">
+    <div className="flex flex-wrap px-11 bg-primary py-12 gap-5">
       {articles.map((article, index) => (
         <ArticleCard
           key={index}

@@ -36,7 +36,7 @@ const NavbarMedicine = () => {
   return (
     <div>
       {/* Desktop Navigation */}
-      <nav className="bg-teal-800 hidden md:block">
+      <nav className="bg-secondary hidden md:block">
         <div className="container mx-auto px-4">
           <ul className="flex overflow-x-auto py-2 justify-between hide-scrollbar">
             {categories.map((category, index) => {
@@ -48,8 +48,8 @@ const NavbarMedicine = () => {
                 <li key={index} className="whitespace-nowrap">
                   <Link
                     href={link}
-                    className={`px-3 py-1 text-sm hover:bg-teal-700 rounded transition block ${
-                      isActive ? "bg-teal-700" : ""
+                    className={`px-3 py-1 text-sm hover:bg-primary hover:text-secondary rounded transition block ${
+                      isActive ? "bg-primary " : ""
                     }`}
                   >
                     {category}

@@ -9,7 +9,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="bg-teal-700 text-white shadow-md">
+    <header className="bg-primary text-white shadow-md">
       {/* Top Bar */}
       <div className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center">
@@ -20,8 +20,8 @@ const Navbar = () => {
                 alt="Logo"
                 className="h-16 w-16 mr-2"
               />
-              <span className="text-teal-200">+</span>
-              <span className="text-white">MediCare</span>
+              <span className="text-secondary">+</span>
+              <span className="text-secondary">MediCare</span>
             </div>
           </Link>
         </div>
@@ -32,11 +32,11 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search entire store here..."
-              className="w-full py-2 px-4 border-2 border-white rounded-full text-gray-800 focus:outline-none"
+              className="w-full py-2 px-4 border-2 border-secondary rounded-full text-gray-800 focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className="absolute right-0 top-0 h-full px-4 bg-teal-600 rounded-r-full hover:bg-teal-800 transition">
+            <button className="absolute right-0 top-0 h-full px-4 bg-secondary rounded-r-full hover:bg-teal-800 transition">
               <FiSearch className="text-white" />
             </button>
           </div>
@@ -46,13 +46,13 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           <Link
             href="/login"
-            className="hidden md:flex items-center hover:text-teal-200 transition"
+            className="hidden md:flex items-center group hover:text-secondary transition"
           >
-            <FiUser className="mr-1" />
-            <span className="font-semibold">Sign In</span>
+            <FiUser className="mr-1 text-secondary group-hover:font-bold" />
+            <span className="font-semibold group-hover:font-bold text-secondary">Sign In</span>
           </Link>
           <button
-            className="md:hidden text-white focus:outline-none"
+            className="md:hidden text-secondary focus:outline-none"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}

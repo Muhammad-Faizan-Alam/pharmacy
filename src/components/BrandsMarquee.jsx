@@ -18,7 +18,7 @@ const BrandsMarquee = () => {
   const duplicatedBrands = [...brandLogos, ...brandLogos];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-primary">
       <div className="container mx-auto px-4">
         <div className="flex justify-center mx-auto container max-w-full items-center mb-8">
           <svg
