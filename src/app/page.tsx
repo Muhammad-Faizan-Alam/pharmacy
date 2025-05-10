@@ -16,7 +16,7 @@ const page = () => {
       <ArticlesSection />
       <FeaturesSection/>
       <BrandMarqee/>
-      <ProductCard />
+      {/* <ProductCard /> */}
       {/* <Footer /> */}
       {/* https://mocki.io/v1/56a84abc-19f6-4620-8aff-eb24593c5412 */}
     </>

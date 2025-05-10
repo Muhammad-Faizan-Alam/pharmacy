@@ -1,14 +1,14 @@
+'use client';
 import React from "react";
 import Link from "next/link";
 
-const ArticleCard = ({ date, title, imageUrl, className = "" }) => {
+const ArticleCard = ({ title, imageUrl, date, className = "" }) => {
+  // Create slug from title for matching the data keys
   const slug = title.toLowerCase().replace(/ /g, "-");
 
   return (
-    <Link href={`/articles/${slug}`} passHref>
-      <div
-        className={`relative w-[300px] h-[220px] rounded-xl overflow-hidden font-sans group cursor-pointer ${className}`}
-      >
+    <Link href={`/articles/${slug}`}>
+      <div className={`relative w-[300px] h-[220px] rounded-xl overflow-hidden font-sans group cursor-pointer ${className}`}>
         <img
           src={imageUrl}
           alt="article-cover"
