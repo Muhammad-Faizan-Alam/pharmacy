@@ -10,23 +10,23 @@ const ArticlesSection = () => {
     },
     {
       date: "April 15, 2025",
-      title: "Skin Care Tips for Summer",
+      title: "babyChild",
       imageUrl: "/asset/article/Baby_Child.webp",
     },
     {
         date: "April 15, 2025",
-        title: "Skin Care Tips for Summer",
+        title: "Electronics",
         imageUrl: "/asset/article/Electronics.webp",
       },
       {
         date: "April 15, 2025",
-        title: "Skin Care Tips for Summer",
-        imageUrl: "/asset/article/Medicines_1.webp",
+        title: "Vitamins",
+        imageUrl: "/asset/article/Vitamins-_-Supplements.webp",
       },
       {
         date: "April 15, 2025",
-        title: "Skin Care Tips for Summer",
-        imageUrl: "/asset/article/Medicines_1.webp",
+        title: "SkinCare",
+        imageUrl: "/asset/article/Skin-Care.webp",
       },
   ];
 
