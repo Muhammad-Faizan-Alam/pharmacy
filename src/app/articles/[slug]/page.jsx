@@ -1,7 +1,6 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { data } from "@/components/store/medicineapi";
 
 const ProductCard = ({ product, onClick }) => {
   const [quantity, setQuantity] = useState(1);
@@ -23,20 +22,18 @@ const ProductCard = ({ product, onClick }) => {
     >
       <div className="h-56 bg-gray-100 flex items-center justify-center">
         <img
-          src={product.imageUrl}
+          src={product.img}
           alt={product.name}
           className="h-full w-full object-contain"
         />
       </div>
       <div className="pt-4">
-        <p className="text-sm text-blue-600 font-medium">{product.brand}</p>
+        <p className="text-sm text-blue-600 font-medium">{product.category}</p>
         <h2 className="text-xl font-semibold text-gray-900">{product.name}</h2>
-        <p className="text-sm text-gray-600 mt-1">{product.pack}</p>
-        <ul className="mt-2 space-y-1 text-sm text-gray-700 list-disc pl-5">
-          {product.description.map((point, i) => (
-            <li key={i}>{point}</li>
-          ))}
-        </ul>
+        <p className="text-sm text-gray-600 mt-1">{product.type}</p>
+        <p className="mt-2 text-sm text-gray-700">
+          {product.description}
+        </p>
         <div className="flex items-center mt-3 space-x-3">
           <button
             onClick={handleDecrease}
@@ -97,7 +94,7 @@ const ProductDetailPage = ({ product }) => {
           {/* Product Image */}
           <div className="w-full md:w-1/2 bg-gray-50 rounded-lg p-4 flex items-center justify-center">
             <img
-              src={product.imageUrl}
+              src={product.img}
               alt={product.name}
               className="max-h-96 object-contain"
             />
@@ -106,15 +103,13 @@ const ProductDetailPage = ({ product }) => {
           {/* Product Details */}
           <div className="w-full md:w-2/3">
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-lg text-blue-600 font-medium mt-2">{product.brand}</p>
+            <p className="text-lg text-blue-600 font-medium mt-2">{product.category}</p>
             
             <div className="mt-6">
               <h2 className="text-xl font-semibold">Description:</h2>
-              <ul className="mt-2 space-y-2 text-gray-700 list-disc pl-5">
-                {product.description.map((point, i) => (
-                  <li key={i}>{point}</li>
-                ))}
-              </ul>
+              <p className="mt-2 text-gray-700">
+                {product.description}
+              </p>
             </div>
             
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
@@ -122,7 +117,7 @@ const ProductDetailPage = ({ product }) => {
                 Rs. {(product.price * quantity).toFixed(2)}
               </p>
               <p className="mt-2 font-medium text-green-600">
-                IN STOCK
+                {product.stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
               </p>
               
               <div className="flex items-center mt-4 space-x-4">
@@ -160,7 +155,8 @@ const ArticleDetailCard = ({ params }) => {
   const { slug } = unwrappedParams;
   
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const articles = data[slug] || [];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
 
@@ -168,32 +164,35 @@ const ArticleDetailCard = ({ params }) => {
   const [brandFilter, setBrandFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [ingredientsFilter, setIngredientsFilter] = useState("");
-  const [formFilter, setFormFilter] = useState("");
-  const [manufacturerFilter, setManufacturerFilter] = useState("");
-  const [topSellingFilter, setTopSellingFilter] = useState(false);
-  const [hotDealsFilter, setHotDealsFilter] = useState(false);
+  const [typeFilter, setTypeFilter] = useState("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('https://681f51fa72e59f922ef5e692.mockapi.io/api/products');
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Get all unique values for filters
-  const allBrands = [...new Set(articles.map(item => item.brand))];
-  const allCategories = [...new Set(articles.map(item => item.category))];
-  const allIngredients = [...new Set(articles.flatMap(item => item.ingredients))];
-  const allForms = [...new Set(articles.map(item => item.form))];
-  const allManufacturers = [...new Set(articles.map(item => item.manufacturer))];
+  const allCategories = [...new Set(products.map(item => item.category))];
+  const allTypes = [...new Set(products.map(item => item.type))];
 
   // Filtering logic
-  const filteredProducts = articles.filter((item) => {
-    const brandMatch = brandFilter ? item.brand === brandFilter : true;
-    const priceMatch = priceFilter ? item.price <= parseInt(priceFilter) : true;
+  const filteredProducts = products.filter((item) => {
     const categoryMatch = categoryFilter ? item.category === categoryFilter : true;
-    const ingredientsMatch = ingredientsFilter ? item.ingredients.includes(ingredientsFilter) : true;
-    const formMatch = formFilter ? item.form === formFilter : true;
-    const manufacturerMatch = manufacturerFilter ? item.manufacturer === manufacturerFilter : true;
-    const topSellingMatch = topSellingFilter ? item.isTopSelling : true;
-    const hotDealsMatch = hotDealsFilter ? item.isHotDeal : true;
+    const priceMatch = priceFilter ? item.price <= parseInt(priceFilter) : true;
+    const typeMatch = typeFilter ? item.type === typeFilter : true;
     
-    return brandMatch && priceMatch && categoryMatch && ingredientsMatch && 
-           formMatch && manufacturerMatch && topSellingMatch && hotDealsMatch;
+    return categoryMatch && priceMatch && typeMatch;
   });
 
   // Pagination logic
@@ -207,9 +206,16 @@ const ArticleDetailCard = ({ params }) => {
   // Handle product click
   const handleProductClick = (product) => {
     setSelectedProduct(product);
-    // Update URL without page reload
     window.history.pushState({}, '', `/products/${product.name.toLowerCase().replace(/\s+/g, '-')}`);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-xl">Loading products...</div>
+      </div>
+    );
+  }
 
   // If a product is selected, show its detail page
   if (selectedProduct) {
@@ -231,6 +237,7 @@ const ArticleDetailCard = ({ params }) => {
               <div className="space-y-4">
                 {/* Category filter */}
                 <div>
+                  <h3 className="font-medium mb-2">Category</h3>
                   <select
                     onChange={(e) => {
                       setCategoryFilter(e.target.value);
@@ -245,18 +252,19 @@ const ArticleDetailCard = ({ params }) => {
                   </select>
                 </div>
 
-                {/* Ingredients filter */}
+                {/* Type filter */}
                 <div>
+                  <h3 className="font-medium mb-2">Type</h3>
                   <select
                     onChange={(e) => {
-                      setIngredientsFilter(e.target.value);
+                      setTypeFilter(e.target.value);
                       setCurrentPage(1);
                     }}
                     className="w-full px-3 py-2 rounded border border-gray-300"
                   >
-                    <option value="">All Ingredients</option>
-                    {allIngredients.map((ingredient, i) => (
-                      <option key={i} value={ingredient}>{ingredient}</option>
+                    <option value="">All Types</option>
+                    {allTypes.map((type, i) => (
+                      <option key={i} value={type}>{type}</option>
                     ))}
                   </select>
                 </div>
@@ -277,45 +285,6 @@ const ArticleDetailCard = ({ params }) => {
                     <option value="2000">Under Rs. 2000</option>
                   </select>
                 </div>
-
-                {/* Brand filter */}
-                <div>
-                  <h3 className="font-medium mb-2">Brand</h3>
-                  <select
-                    onChange={(e) => {
-                      setBrandFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full px-3 py-2 rounded border border-gray-300"
-                  >
-                    <option value="">All Brands</option>
-                    {allBrands.map((brand, i) => (
-                      <option key={i} value={brand}>{brand}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Toggle filters */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => {
-                      setTopSellingFilter(!topSellingFilter);
-                      setCurrentPage(1);
-                    }}
-                    className={`px-3 py-2 rounded border ${topSellingFilter ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
-                  >
-                    Top Selling
-                  </button>
-                  <button
-                    onClick={() => {
-                      setHotDealsFilter(!hotDealsFilter);
-                      setCurrentPage(1);
-                    }}
-                    className={`px-3 py-2 rounded border ${hotDealsFilter ? 'bg-red-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
-                  >
-                    Hot Deals
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -324,16 +293,16 @@ const ArticleDetailCard = ({ params }) => {
           <div className="w-full md:w-3/4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {currentProducts.length > 0 ? (
-                currentProducts.map((product, index) => (
+                currentProducts.map((product) => (
                   <ProductCard 
-                    key={index} 
+                    key={product.id} 
                     product={product} 
                     onClick={() => handleProductClick(product)}
                   />
                 ))
               ) : (
                 <div className="col-span-full text-center py-10 text-red-500 bg-white rounded-lg shadow">
-                  No medicines match selected filters.
+                  No products match selected filters.
                 </div>
               )}
             </div>
@@ -378,3 +347,413 @@ const ArticleDetailCard = ({ params }) => {
 };
 
 export default ArticleDetailCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 'use client';
+// import React, { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { data } from "@/components/store/medicineapi";
+
+// const ProductCard = ({ product, onClick }) => {
+//   const [quantity, setQuantity] = useState(1);
+
+//   const handleIncrease = (e) => {
+//     e.stopPropagation();
+//     setQuantity(prev => prev + 1);
+//   };
+
+//   const handleDecrease = (e) => {
+//     e.stopPropagation();
+//     if (quantity > 1) setQuantity(prev => prev - 1);
+//   };
+
+//   return (
+//     <div 
+//       className="w-72 bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 p-4 cursor-pointer"
+//       onClick={onClick}
+//     >
+//       <div className="h-56 bg-gray-100 flex items-center justify-center">
+//         <img
+//           src={product.imageUrl}
+//           alt={product.name}
+//           className="h-full w-full object-contain"
+//         />
+//       </div>
+//       <div className="pt-4">
+//         <p className="text-sm text-blue-600 font-medium">{product.brand}</p>
+//         <h2 className="text-xl font-semibold text-gray-900">{product.name}</h2>
+//         <p className="text-sm text-gray-600 mt-1">{product.pack}</p>
+//         <ul className="mt-2 space-y-1 text-sm text-gray-700 list-disc pl-5">
+//           {product.description.map((point, i) => (
+//             <li key={i}>{point}</li>
+//           ))}
+//         </ul>
+//         <div className="flex items-center mt-3 space-x-3">
+//           <button
+//             onClick={handleDecrease}
+//             className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+//           >
+//             -
+//           </button>
+//           <span className="text-xl font-semibold text-red-600">{quantity}</span>
+//           <button
+//             onClick={handleIncrease}
+//             className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+//           >
+//             +
+//           </button>
+//         </div>
+//         <div className="flex mt-4 items-center justify-between">
+//           <p className="text-green-600 font-bold text-lg">
+//             Rs. {(product.price * quantity).toFixed(2)}
+//           </p>
+//           <button 
+//             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+//             onClick={(e) => {
+//               e.stopPropagation();
+//               // Add to cart logic here
+//             }}
+//           >
+//             Add to Cart
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const ProductDetailPage = ({ product }) => {
+//   const router = useRouter();
+//   const [quantity, setQuantity] = useState(1);
+
+//   const increaseQty = () => setQuantity(prev => prev + 1);
+//   const decreaseQty = () => {
+//     if (quantity > 1) setQuantity(prev => prev - 1);
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 py-8 px-4">
+//       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+//         <button 
+//           onClick={() => router.back()}
+//           className="mb-6 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center"
+//         >
+//           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+//             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+//           </svg>
+//           Back to Products
+//         </button>
+        
+//         <div className="flex flex-col md:flex-row gap-8">
+//           {/* Product Image */}
+//           <div className="w-full md:w-1/2 bg-gray-50 rounded-lg p-4 flex items-center justify-center">
+//             <img
+//               src={product.imageUrl}
+//               alt={product.name}
+//               className="max-h-96 object-contain"
+//             />
+//           </div>
+          
+//           {/* Product Details */}
+//           <div className="w-full md:w-2/3">
+//             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+//             <p className="text-lg text-blue-600 font-medium mt-2">{product.brand}</p>
+            
+//             <div className="mt-6">
+//               <h2 className="text-xl font-semibold">Description:</h2>
+//               <ul className="mt-2 space-y-2 text-gray-700 list-disc pl-5">
+//                 {product.description.map((point, i) => (
+//                   <li key={i}>{point}</li>
+//                 ))}
+//               </ul>
+//             </div>
+            
+//             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+//               <p className="text-2xl font-bold text-green-600">
+//                 Rs. {(product.price * quantity).toFixed(2)}
+//               </p>
+//               <p className="mt-2 font-medium text-green-600">
+//                 IN STOCK
+//               </p>
+              
+//               <div className="flex items-center mt-4 space-x-4">
+//                 <div className="flex items-center space-x-3">
+//                   <button
+//                     onClick={decreaseQty}
+//                     className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+//                   >
+//                     -
+//                   </button>
+//                   <span className="text-xl font-semibold text-red-600">{quantity}</span>
+//                   <button
+//                     onClick={increaseQty}
+//                     className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+//                   >
+//                     +
+//                   </button>
+//                 </div>
+                
+//                 <button className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+//                   Add to Cart
+//                 </button>
+//               </div>
+
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const ArticleDetailCard = ({ params }) => {
+//   const router = useRouter();
+//   const unwrappedParams = React.use(params);
+//   const { slug } = unwrappedParams;
+  
+//   const [selectedProduct, setSelectedProduct] = useState(null);
+//   const articles = data[slug] || [];
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const productsPerPage = 9;
+
+//   // State for all filters
+//   const [brandFilter, setBrandFilter] = useState("");
+//   const [priceFilter, setPriceFilter] = useState("");
+//   const [categoryFilter, setCategoryFilter] = useState("");
+//   const [ingredientsFilter, setIngredientsFilter] = useState("");
+//   const [formFilter, setFormFilter] = useState("");
+//   const [manufacturerFilter, setManufacturerFilter] = useState("");
+//   const [topSellingFilter, setTopSellingFilter] = useState(false);
+//   const [hotDealsFilter, setHotDealsFilter] = useState(false);
+
+//   // Get all unique values for filters
+//   const allBrands = [...new Set(articles.map(item => item.brand))];
+//   const allCategories = [...new Set(articles.map(item => item.category))];
+//   const allIngredients = [...new Set(articles.flatMap(item => item.ingredients))];
+//   const allForms = [...new Set(articles.map(item => item.form))];
+//   const allManufacturers = [...new Set(articles.map(item => item.manufacturer))];
+
+//   // Filtering logic
+//   const filteredProducts = articles.filter((item) => {
+//     const brandMatch = brandFilter ? item.brand === brandFilter : true;
+//     const priceMatch = priceFilter ? item.price <= parseInt(priceFilter) : true;
+//     const categoryMatch = categoryFilter ? item.category === categoryFilter : true;
+//     const ingredientsMatch = ingredientsFilter ? item.ingredients.includes(ingredientsFilter) : true;
+//     const formMatch = formFilter ? item.form === formFilter : true;
+//     const manufacturerMatch = manufacturerFilter ? item.manufacturer === manufacturerFilter : true;
+//     const topSellingMatch = topSellingFilter ? item.isTopSelling : true;
+//     const hotDealsMatch = hotDealsFilter ? item.isHotDeal : true;
+    
+//     return brandMatch && priceMatch && categoryMatch && ingredientsMatch && 
+//            formMatch && manufacturerMatch && topSellingMatch && hotDealsMatch;
+//   });
+
+//   // Pagination logic
+//   const indexOfLastProduct = currentPage * productsPerPage;
+//   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+//   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+//   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+//   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+//   // Handle product click
+//   const handleProductClick = (product) => {
+//     setSelectedProduct(product);
+//     // Update URL without page reload
+//     window.history.pushState({}, '', `/products/${product.name.toLowerCase().replace(/\s+/g, '-')}`);
+//   };
+
+//   // If a product is selected, show its detail page
+//   if (selectedProduct) {
+//     return <ProductDetailPage product={selectedProduct} />;
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-100">
+//       <div className="container mx-auto py-8">
+//         <h1 className="text-2xl font-bold mb-6">MEDICINES</h1>
+//         <img src="/asset/medicine/Medicines.webp" className="mb-10 w-full" alt="Medicines" />
+        
+//         <div className="flex flex-col md:flex-row gap-6">
+//           {/* Filters Sidebar - Left Side */}
+//           <div className="w-full md:w-1/4">
+//             <div className="bg-white p-4 rounded-lg shadow sticky top-4">
+//               <h2 className="font-bold mb-4">Filters</h2>
+              
+//               <div className="space-y-4">
+//                 {/* Category filter */}
+//                 <div>
+//                   <select
+//                     onChange={(e) => {
+//                       setCategoryFilter(e.target.value);
+//                       setCurrentPage(1);
+//                     }}
+//                     className="w-full px-3 py-2 rounded border border-gray-300"
+//                   >
+//                     <option value="">All Categories</option>
+//                     {allCategories.map((category, i) => (
+//                       <option key={i} value={category}>{category}</option>
+//                     ))}
+//                   </select>
+//                 </div>
+
+//                 {/* Ingredients filter */}
+//                 <div>
+//                   <select
+//                     onChange={(e) => {
+//                       setIngredientsFilter(e.target.value);
+//                       setCurrentPage(1);
+//                     }}
+//                     className="w-full px-3 py-2 rounded border border-gray-300"
+//                   >
+//                     <option value="">All Ingredients</option>
+//                     {allIngredients.map((ingredient, i) => (
+//                       <option key={i} value={ingredient}>{ingredient}</option>
+//                     ))}
+//                   </select>
+//                 </div>
+
+//                 {/* Price filter */}
+//                 <div>
+//                   <h3 className="font-medium mb-2">Price</h3>
+//                   <select
+//                     onChange={(e) => {
+//                       setPriceFilter(e.target.value);
+//                       setCurrentPage(1);
+//                     }}
+//                     className="w-full px-3 py-2 rounded border border-gray-300"
+//                   >
+//                     <option value="">All Prices</option>
+//                     <option value="500">Under Rs. 500</option>
+//                     <option value="1000">Under Rs. 1000</option>
+//                     <option value="2000">Under Rs. 2000</option>
+//                   </select>
+//                 </div>
+
+//                 {/* Brand filter */}
+//                 <div>
+//                   <h3 className="font-medium mb-2">Brand</h3>
+//                   <select
+//                     onChange={(e) => {
+//                       setBrandFilter(e.target.value);
+//                       setCurrentPage(1);
+//                     }}
+//                     className="w-full px-3 py-2 rounded border border-gray-300"
+//                   >
+//                     <option value="">All Brands</option>
+//                     {allBrands.map((brand, i) => (
+//                       <option key={i} value={brand}>{brand}</option>
+//                     ))}
+//                   </select>
+//                 </div>
+
+//                 {/* Toggle filters */}
+//                 <div className="flex flex-col gap-2">
+//                   <button
+//                     onClick={() => {
+//                       setTopSellingFilter(!topSellingFilter);
+//                       setCurrentPage(1);
+//                     }}
+//                     className={`px-3 py-2 rounded border ${topSellingFilter ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
+//                   >
+//                     Top Selling
+//                   </button>
+//                   <button
+//                     onClick={() => {
+//                       setHotDealsFilter(!hotDealsFilter);
+//                       setCurrentPage(1);
+//                     }}
+//                     className={`px-3 py-2 rounded border ${hotDealsFilter ? 'bg-red-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
+//                   >
+//                     Hot Deals
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Products Grid - Right Side */}
+//           <div className="w-full md:w-3/4">
+//             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//               {currentProducts.length > 0 ? (
+//                 currentProducts.map((product, index) => (
+//                   <ProductCard 
+//                     key={index} 
+//                     product={product} 
+//                     onClick={() => handleProductClick(product)}
+//                   />
+//                 ))
+//               ) : (
+//                 <div className="col-span-full text-center py-10 text-red-500 bg-white rounded-lg shadow">
+//                   No medicines match selected filters.
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Pagination */}
+//             {filteredProducts.length > productsPerPage && (
+//               <div className="flex justify-center mt-8">
+//                 <nav className="flex items-center gap-1">
+//                   <button
+//                     onClick={() => paginate(Math.max(currentPage - 1, 1))}
+//                     disabled={currentPage === 1}
+//                     className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+//                   >
+//                     Previous
+//                   </button>
+                  
+//                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+//                     <button
+//                       key={number}
+//                       onClick={() => paginate(number)}
+//                       className={`px-3 py-1 rounded border ${currentPage === number ? 'bg-blue-500 text-white' : 'border-gray-300'}`}
+//                     >
+//                       {number}
+//                     </button>
+//                   ))}
+                  
+//                   <button
+//                     onClick={() => paginate(Math.min(currentPage + 1, totalPages))}
+//                     disabled={currentPage === totalPages}
+//                     className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+//                   >
+//                     Next
+//                   </button>
+//                 </nav>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ArticleDetailCard;
