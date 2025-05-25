@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useProducts } from "@/app/Context/ProductsContext";
 
 const ProductCard = ({ product, onClick }) => {
   const [quantity, setQuantity] = useState(1);
@@ -68,8 +69,7 @@ const ProductCard = ({ product, onClick }) => {
   );
 };
 
-const ProductDetailPage = ({ product }) => {
-  const router = useRouter();
+const ProductDetailPage = ({ product, onBack }) => {
   const [quantity, setQuantity] = useState(1);
 
   const increaseQty = () => setQuantity(prev => prev + 1);
@@ -78,69 +78,44 @@ const ProductDetailPage = ({ product }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-8">
         <button 
-          onClick={() => router.back()}
-          className="mb-6 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center"
+          onClick={onBack}
+          className="mb-6 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center font-semibold text-gray-700"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
           </svg>
           Back to Products
         </button>
-        
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Product Image */}
           <div className="w-full md:w-1/2 bg-gray-50 rounded-lg p-4 flex items-center justify-center">
             <img
               src={product.img}
               alt={product.name}
-              className="max-h-96 object-contain"
+              className="max-h-96 object-contain rounded-xl shadow"
             />
           </div>
-          
-          {/* Product Details */}
           <div className="w-full md:w-2/3">
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-lg text-blue-600 font-medium mt-2">{product.category}</p>
-            
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold">Description:</h2>
-              <p className="mt-2 text-gray-700">
-                {product.description}
-              </p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+            <p className="text-lg text-blue-600 font-medium mb-2">{product.category}</p>
+            <div className="mb-4">
+              <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold mr-2">{product.type}</span>
+              <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{product.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
             </div>
-            
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">
-                Rs. {(product.price * quantity).toFixed(2)}
-              </p>
-              <p className="mt-2 font-medium text-green-600">
-                {product.stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
-              </p>
-              
-              <div className="flex items-center mt-4 space-x-4">
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={decreaseQty}
-                    className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
-                  >
-                    -
-                  </button>
-                  <span className="text-xl font-semibold text-red-600">{quantity}</span>
-                  <button
-                    onClick={increaseQty}
-                    className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
-                  >
-                    +
-                  </button>
-                </div>
-                
-                <button className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                  Add to Cart
-                </button>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-1">Description:</h2>
+              <p className="text-gray-700">{product.description}</p>
+            </div>
+            <div className="flex items-center gap-4 mb-6">
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">-</button>
+              <span className="text-xl font-semibold text-red-600">{quantity}</span>
+              <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">+</button>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-2xl font-bold text-green-600">Rs. {(product.price * quantity).toFixed(2)}</p>
+              <button className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow">Add to Cart</button>
             </div>
           </div>
         </div>
@@ -150,49 +125,35 @@ const ProductDetailPage = ({ product }) => {
 };
 
 const ArticleDetailCard = ({ params }) => {
-  const router = useRouter();
-  const unwrappedParams = React.use(params);
-  const { slug } = unwrappedParams;
-  
+  const { products, loading } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
-
-  // State for all filters
-  const [brandFilter, setBrandFilter] = useState("");
-  const [priceFilter, setPriceFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
+  const [stockFilter, setStockFilter] = useState("");
+  const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('https://681f51fa72e59f922ef5e692.mockapi.io/api/products');
-        const data = await response.json();
-        setProducts(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setLoading(false);
-      }
-    };
+  // Unwrap params for Next.js App Router compliance
+  const unwrappedParams = React.use(params);
+  const slug = unwrappedParams?.slug || "";
+  const normalizedSlug = slug.replace(/[-_ ]/g, '').toLowerCase();
 
-    fetchProducts();
-  }, []);
+  // Filter products by category (case-insensitive, ignore spaces/underscores)
+  const categoryProducts = products.filter(p =>
+    p.category && p.category.replace(/[-_ ]/g, '').toLowerCase() === normalizedSlug
+  );
 
-  // Get all unique values for filters
-  const allCategories = [...new Set(products.map(item => item.category))];
-  const allTypes = [...new Set(products.map(item => item.type))];
+  // Get all unique types for filter
+  const allTypes = [...new Set(categoryProducts.map(item => item.type))];
 
   // Filtering logic
-  const filteredProducts = products.filter((item) => {
-    const categoryMatch = categoryFilter ? item.category === categoryFilter : true;
-    const priceMatch = priceFilter ? item.price <= parseInt(priceFilter) : true;
+  const filteredProducts = categoryProducts.filter(item => {
     const typeMatch = typeFilter ? item.type === typeFilter : true;
-    
-    return categoryMatch && priceMatch && typeMatch;
+    const priceMatch = priceFilter ? item.price <= parseInt(priceFilter) : true;
+    const stockMatch = stockFilter ? (stockFilter === 'in' ? item.stock > 0 : item.stock === 0) : true;
+    const searchMatch = search ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
+    return typeMatch && priceMatch && stockMatch && searchMatch;
   });
 
   // Pagination logic
@@ -203,102 +164,88 @@ const ArticleDetailCard = ({ params }) => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Handle product click
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-    window.history.pushState({}, '', `/products/${product.name.toLowerCase().replace(/\s+/g, '-')}`);
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-xl">Loading products...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
+        <div className="text-xl font-semibold text-blue-700 animate-pulse">Loading products...</div>
       </div>
     );
   }
 
-  // If a product is selected, show its detail page
   if (selectedProduct) {
-    return <ProductDetailPage product={selectedProduct} />;
+    return <ProductDetailPage product={selectedProduct} onBack={() => setSelectedProduct(null)} />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <div className="container mx-auto py-8">
-        <h1 className="text-2xl font-bold mb-6">MEDICINES</h1>
-        <img src="/asset/medicine/Medicines.webp" className="mb-10 w-full" alt="Medicines" />
-        
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Filters Sidebar - Left Side */}
-          <div className="w-full md:w-1/4">
-            <div className="bg-white p-4 rounded-lg shadow sticky top-4">
-              <h2 className="font-bold mb-4">Filters</h2>
-              
+        <h1 className="text-3xl font-bold mb-6 text-center text-blue-800 uppercase tracking-wide drop-shadow">{slug.replace(/[-_]/g, ' ')}</h1>
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Filters Sidebar */}
+          <aside className="w-full md:w-1/4">
+            <div className="bg-white p-6 rounded-2xl shadow-lg sticky top-4">
+              <h2 className="font-bold mb-4 text-lg text-blue-700">Filters</h2>
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
+                className="w-full mb-4 px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-200 outline-none"
+              />
               <div className="space-y-4">
-                {/* Category filter */}
-                <div>
-                  <h3 className="font-medium mb-2">Category</h3>
-                  <select
-                    onChange={(e) => {
-                      setCategoryFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full px-3 py-2 rounded border border-gray-300"
-                  >
-                    <option value="">All Categories</option>
-                    {allCategories.map((category, i) => (
-                      <option key={i} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-
                 {/* Type filter */}
                 <div>
-                  <h3 className="font-medium mb-2">Type</h3>
+                  <label className="block font-medium mb-1">Type</label>
                   <select
-                    onChange={(e) => {
-                      setTypeFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
+                    value={typeFilter}
+                    onChange={e => { setTypeFilter(e.target.value); setCurrentPage(1); }}
                     className="w-full px-3 py-2 rounded border border-gray-300"
                   >
                     <option value="">All Types</option>
-                    {allTypes.map((type, i) => (
-                      <option key={i} value={type}>{type}</option>
+                    {allTypes.map((type) => (
+                      <option key={type} value={type}>{type}</option>
                     ))}
                   </select>
                 </div>
-
                 {/* Price filter */}
                 <div>
-                  <h3 className="font-medium mb-2">Price</h3>
+                  <label className="block font-medium mb-1">Price</label>
                   <select
-                    onChange={(e) => {
-                      setPriceFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
+                    value={priceFilter}
+                    onChange={e => { setPriceFilter(e.target.value); setCurrentPage(1); }}
                     className="w-full px-3 py-2 rounded border border-gray-300"
                   >
                     <option value="">All Prices</option>
+                    <option value="50">Under Rs. 50</option>
+                    <option value="100">Under Rs. 100</option>
+                    <option value="200">Under Rs. 200</option>
                     <option value="500">Under Rs. 500</option>
-                    <option value="1000">Under Rs. 1000</option>
-                    <option value="2000">Under Rs. 2000</option>
+                  </select>
+                </div>
+                {/* Stock filter */}
+                <div>
+                  <label className="block font-medium mb-1">Stock</label>
+                  <select
+                    value={stockFilter}
+                    onChange={e => { setStockFilter(e.target.value); setCurrentPage(1); }}
+                    className="w-full px-3 py-2 rounded border border-gray-300"
+                  >
+                    <option value="">All</option>
+                    <option value="in">In Stock</option>
+                    <option value="out">Out of Stock</option>
                   </select>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Products Grid - Right Side */}
-          <div className="w-full md:w-3/4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </aside>
+          {/* Products Grid */}
+          <section className="w-full md:w-3/4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentProducts.length > 0 ? (
-                currentProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    onClick={() => handleProductClick(product)}
-                  />
+                currentProducts.map(product => (
+                  <div key={product.id} className="hover:scale-105 transition-transform duration-200">
+                    <ProductCard product={product} onClick={() => setSelectedProduct(product)} />
+                  </div>
                 ))
               ) : (
                 <div className="col-span-full text-center py-10 text-red-500 bg-white rounded-lg shadow">
@@ -306,7 +253,6 @@ const ArticleDetailCard = ({ params }) => {
                 </div>
               )}
             </div>
-
             {/* Pagination */}
             {filteredProducts.length > productsPerPage && (
               <div className="flex justify-center mt-8">
@@ -318,8 +264,7 @@ const ArticleDetailCard = ({ params }) => {
                   >
                     Previous
                   </button>
-                  
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
                     <button
                       key={number}
                       onClick={() => paginate(number)}
@@ -328,7 +273,6 @@ const ArticleDetailCard = ({ params }) => {
                       {number}
                     </button>
                   ))}
-                  
                   <button
                     onClick={() => paginate(Math.min(currentPage + 1, totalPages))}
                     disabled={currentPage === totalPages}
@@ -339,7 +283,7 @@ const ArticleDetailCard = ({ params }) => {
                 </nav>
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
     </div>
@@ -610,6 +554,7 @@ export default ArticleDetailCard;
 //               <div className="space-y-4">
 //                 {/* Category filter */}
 //                 <div>
+//                   <h3 className="font-medium mb-2">Category</h3>
 //                   <select
 //                     onChange={(e) => {
 //                       setCategoryFilter(e.target.value);
@@ -624,18 +569,19 @@ export default ArticleDetailCard;
 //                   </select>
 //                 </div>
 
-//                 {/* Ingredients filter */}
+//                 {/* Type filter */}
 //                 <div>
+//                   <h3 className="font-medium mb-2">Type</h3>
 //                   <select
 //                     onChange={(e) => {
-//                       setIngredientsFilter(e.target.value);
+//                       setTypeFilter(e.target.value);
 //                       setCurrentPage(1);
 //                     }}
 //                     className="w-full px-3 py-2 rounded border border-gray-300"
 //                   >
-//                     <option value="">All Ingredients</option>
-//                     {allIngredients.map((ingredient, i) => (
-//                       <option key={i} value={ingredient}>{ingredient}</option>
+//                     <option value="">All Types</option>
+//                     {allTypes.map((type, i) => (
+//                       <option key={i} value={type}>{type}</option>
 //                     ))}
 //                   </select>
 //                 </div>
@@ -656,45 +602,6 @@ export default ArticleDetailCard;
 //                     <option value="2000">Under Rs. 2000</option>
 //                   </select>
 //                 </div>
-
-//                 {/* Brand filter */}
-//                 <div>
-//                   <h3 className="font-medium mb-2">Brand</h3>
-//                   <select
-//                     onChange={(e) => {
-//                       setBrandFilter(e.target.value);
-//                       setCurrentPage(1);
-//                     }}
-//                     className="w-full px-3 py-2 rounded border border-gray-300"
-//                   >
-//                     <option value="">All Brands</option>
-//                     {allBrands.map((brand, i) => (
-//                       <option key={i} value={brand}>{brand}</option>
-//                     ))}
-//                   </select>
-//                 </div>
-
-//                 {/* Toggle filters */}
-//                 <div className="flex flex-col gap-2">
-//                   <button
-//                     onClick={() => {
-//                       setTopSellingFilter(!topSellingFilter);
-//                       setCurrentPage(1);
-//                     }}
-//                     className={`px-3 py-2 rounded border ${topSellingFilter ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
-//                   >
-//                     Top Selling
-//                   </button>
-//                   <button
-//                     onClick={() => {
-//                       setHotDealsFilter(!hotDealsFilter);
-//                       setCurrentPage(1);
-//                     }}
-//                     className={`px-3 py-2 rounded border ${hotDealsFilter ? 'bg-red-500 text-white' : 'bg-white text-gray-700'} border-gray-300 text-sm`}
-//                   >
-//                     Hot Deals
-//                   </button>
-//                 </div>
 //               </div>
 //             </div>
 //           </div>
@@ -703,16 +610,16 @@ export default ArticleDetailCard;
 //           <div className="w-full md:w-3/4">
 //             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 //               {currentProducts.length > 0 ? (
-//                 currentProducts.map((product, index) => (
+//                 currentProducts.map((product) => (
 //                   <ProductCard 
-//                     key={index} 
+//                     key={product.id} 
 //                     product={product} 
 //                     onClick={() => handleProductClick(product)}
 //                   />
 //                 ))
 //               ) : (
 //                 <div className="col-span-full text-center py-10 text-red-500 bg-white rounded-lg shadow">
-//                   No medicines match selected filters.
+//                   No products match selected filters.
 //                 </div>
 //               )}
 //             </div>

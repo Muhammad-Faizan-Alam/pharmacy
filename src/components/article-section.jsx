@@ -5,7 +5,7 @@ const ArticlesSection = () => {
   const articles = [
     {
       date: "April 29, 2025",
-      title: "Top 10 Health Supplements",
+      title: "Medicines",
       imageUrl: "/asset/article/Medicines_1.webp",
     },
     {
@@ -20,7 +20,7 @@ const ArticlesSection = () => {
       },
       {
         date: "April 15, 2025",
-        title: "Vitamins",
+        title: "Supplements",
         imageUrl: "/asset/article/Vitamins-_-Supplements.webp",
       },
       {

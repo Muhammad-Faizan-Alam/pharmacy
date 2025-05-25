@@ -23,7 +23,7 @@ const NavbarMedicine = () => {
   };
 
   const getCategoryLink = (category: string) => {
-    return `/article/${getCategorySlug(category)}`; // Changed to /article/[slug]
+    return `${getCategorySlug(category)}`; // Changed to /article/[slug]
   };
 
   return (
