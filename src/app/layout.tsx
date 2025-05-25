@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ProductsProvider } from "@/app/Context/ProductsContext"; // <- Import your context
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ProductsProvider> {/* ✅ Wrap with context provider */}
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ProductsProvider>
       </body>
     </html>
   );
