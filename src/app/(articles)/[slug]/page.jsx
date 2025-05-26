@@ -114,14 +114,22 @@ const ProductDetailPage = ({ product, onBack }) => {
               <h2 className="text-xl font-semibold mb-1">Description:</h2>
               <p className="text-gray-700">{product.description}</p>
             </div>
-            <div className="flex items-center gap-4 mb-6">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">-</button>
-              <span className="text-xl font-semibold text-red-600">{quantity}</span>
-              <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">+</button>
+            <div className="flex items-center justify-between m-6">
+              <div className="flex items-center gap-4">
+                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">-</button>
+                <span className="text-xl font-semibold text-red-600">{quantity}</span>
+                <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">+</button>
+              </div>
+
+              <div className="text-lg font-semibold text-gray-800">
+                {product.stock} available
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-2xl font-bold text-green-600">Rs. {(product.price * quantity).toFixed(2)}</p>
-              <button className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow">Add to Cart</button>
+              <button className="font-semibold shadow px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={product.stock === 0}>
+                Add to Cart</button>
             </div>
           </div>
         </div>
