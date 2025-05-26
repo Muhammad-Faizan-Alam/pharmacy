@@ -35,7 +35,7 @@ const ProductCard = ({ product, onClick }) => {
         <p className="mt-2 text-sm text-gray-700">
           {product.description}
         </p>
-        <div className="flex items-center mt-3 space-x-3">
+        {/* <div className="flex items-center mt-3 space-x-3">
           <button
             onClick={handleDecrease}
             className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
@@ -49,17 +49,23 @@ const ProductCard = ({ product, onClick }) => {
           >
             +
           </button>
+        </div> */}
+        <div>
+          {product.stock > 0 ? (
+            <p className="text-green-600 font-bold text-lg mt-2">In Stock</p>) : (
+            <p className="text-red-600 font-bold text-lg mt-2">Out of Stock</p>)}
         </div>
         <div className="flex mt-4 items-center justify-between">
           <p className="text-green-600 font-bold text-lg">
             Rs. {(product.price * quantity).toFixed(2)}
           </p>
           <button 
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={(e) => {
               e.stopPropagation();
               // Add to cart logic here
             }}
+            disabled={product.stock === 0}
           >
             Add to Cart
           </button>
