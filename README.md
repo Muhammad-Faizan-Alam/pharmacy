@@ -2,3 +2,4 @@ mongoose
 nextauth
 nodemailer
 bcrypt
+jsonwebtoken
