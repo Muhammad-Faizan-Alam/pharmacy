@@ -1,7 +1,4 @@
 import { NextResponse } from "next/server";
-import User from "@/models/User";
-import bcryptjs from "bcryptjs";
-import { sendEmail } from "@/lib/mailer";
 import dbConnect from "@/lib/dbConnect";
 
 dbConnect();
