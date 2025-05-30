@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FiTrash2, FiPlus, FiMinus, FiShoppingCart } from 'react-icons/fi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -10,6 +11,7 @@ const CartPage = () => {
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [checkoutMsg, setCheckoutMsg] = useState(null);
+  const router = useRouter();
 
   // Fetch cart on mount
   useEffect(() => {
@@ -70,8 +72,7 @@ const CartPage = () => {
 //   };
 
   const handleCheckout = () => {
-    setCheckoutMsg('Checkout is not implemented in this demo.');
-    setTimeout(() => setCheckoutMsg(null), 2000);
+    router.push('/store/checkout');
   };
 
   return (
@@ -189,11 +190,14 @@ const CartPage = () => {
                 </div>
                 {checkoutMsg && <div className="mb-2 px-4 py-2 rounded bg-green-100 text-green-700 font-semibold text-center">{checkoutMsg}</div>}
                 <button
-                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition text-lg disabled:opacity-50 mt-2"
+                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-green-400 hover:from-green-500 hover:to-blue-400 text-white font-bold rounded-xl shadow-lg transition text-lg disabled:opacity-50 mt-2 flex items-center justify-center gap-2 group"
                   onClick={handleCheckout}
                   disabled={updating || cart.items.length === 0}
                 >
-                  Proceed to Checkout
+                  <span className="inline-block group-hover:scale-110 transition-transform duration-200">
+                    <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="7" cy="21" r="2" stroke="#fff" strokeWidth="2"/><circle cx="17" cy="21" r="2" stroke="#fff" strokeWidth="2"/></svg>
+                  </span>
+                  <span>Proceed to Checkout</span>
                 </button>
               </div>
               <img src="/asset/medicine/Medicines.webp" alt="Cart Visual" className="w-full rounded-xl mt-8 shadow-lg hidden md:block" />
