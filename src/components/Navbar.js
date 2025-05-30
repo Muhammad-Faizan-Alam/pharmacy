@@ -1,12 +1,23 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
 import NavbarMedicine from "./navbarmedicne";
+import axios from "axios";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const user = axios.post('/api/users/me')
+    .then(response => {
+      // Handle user data if needed
+      console.log("User data:", response.data);
+      setUser(response.data.data);
+    })
+  }, []);
 
   return (
     <header className="bg-primary text-white shadow-md">
@@ -45,11 +56,11 @@ const Navbar = () => {
         {/* User Auth */}
         <div className="flex items-center space-x-4">
           <Link
-            href="/login"
+            href="/profile"
             className="hidden md:flex items-center group hover:text-secondary transition"
           >
             <FiUser className="mr-1 text-secondary group-hover:font-bold" />
-            <span className="font-semibold group-hover:font-bold text-secondary">Sign In</span>
+            <span className="font-semibold group-hover:font-bold text-secondary">{user === null ? "user" : user.username}</span>
           </Link>
           <button
             className="md:hidden text-secondary focus:outline-none"
@@ -92,12 +103,12 @@ const Navbar = () => {
           {/* Mobile Auth */}
           <div className="p-4 border-t border-teal-700">
             <Link
-              href="/login"
+              href="/profile"
               className="flex items-center justify-center py-2 px-4 bg-teal-600 rounded hover:bg-teal-700 transition"
               onClick={() => setIsMenuOpen(false)}
             >
               <FiUser className="mr-2" />
-              Sign In
+              {user === null ? "user" : user.username}
             </Link>
           </div>
         </div>

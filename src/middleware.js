@@ -11,6 +11,9 @@ const middleware = (request) => {
     } else if (!token && !isPublicPath) {
         // User is not authenticated, redirect to login page
         return NextResponse.redirect(new URL('/login', request.url))
+    } else {
+        // If the user is authenticated and accessing a public path, allow access
+        return NextResponse.next()
     }
 }
 
@@ -22,5 +25,6 @@ export const config = {
         '/login',
         '/signup',
         '/verifyemail',
+        // '/'
     ],
 }
