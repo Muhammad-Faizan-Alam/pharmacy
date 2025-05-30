@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiUser, FiMenu, FiX, FiShoppingCart } from "react-icons/fi";
 import NavbarMedicine from "./navbarmedicne";
 import axios from "axios";
 
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const user = axios.post('/api/users/me')
@@ -17,6 +18,14 @@ const Navbar = () => {
       console.log("User data:", response.data);
       setUser(response.data.data);
     })
+
+    // Fetch cart count
+    axios.get('/api/cart')
+      .then(res => {
+        const items = res.data?.data?.items || [];
+        setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+      })
+      .catch(() => setCartCount(0));
   }, []);
 
   return (
@@ -53,10 +62,20 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* User Auth */}
+        {/* User Auth & Cart */}
         <div className="flex items-center space-x-4">
+          {/* Cart Icon */}
+          <Link href="/store/cart" className="relative flex items-center group hover:text-secondary transition">
+            <FiShoppingCart className="text-secondary group-hover:font-bold" size={24} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          {/* Profile/User Icon */}
           <Link
-            href="/profile"
+            href="/store/profile"
             className="hidden md:flex items-center group hover:text-secondary transition"
           >
             <FiUser className="mr-1 text-secondary group-hover:font-bold" />

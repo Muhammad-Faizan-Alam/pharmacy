@@ -2,9 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProducts } from "@/app/Context/ProductsContext";
+import axios from "axios";
 
 const ProductCard = ({ product, onClick }) => {
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleIncrease = (e) => {
     e.stopPropagation();
@@ -14,6 +18,25 @@ const ProductCard = ({ product, onClick }) => {
   const handleDecrease = (e) => {
     e.stopPropagation();
     if (quantity > 1) setQuantity(prev => prev - 1);
+  };
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      await axios.post("/api/cart", {
+        productId: product.id || product._id,
+        quantity,
+      });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 1200);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add to cart");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,10 +58,11 @@ const ProductCard = ({ product, onClick }) => {
         <p className="mt-2 text-sm text-gray-700">
           {product.description}
         </p>
-        {/* <div className="flex items-center mt-3 space-x-3">
+        <div className="flex items-center mt-3 space-x-3">
           <button
             onClick={handleDecrease}
             className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+            disabled={quantity <= 1 || loading}
           >
             -
           </button>
@@ -46,10 +70,11 @@ const ProductCard = ({ product, onClick }) => {
           <button
             onClick={handleIncrease}
             className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700"
+            disabled={loading}
           >
             +
           </button>
-        </div> */}
+        </div>
         <div>
           {product.stock > 0 ? (
             <p className="text-green-600 font-bold text-lg mt-2">In Stock</p>) : (
@@ -60,16 +85,21 @@ const ProductCard = ({ product, onClick }) => {
             Rs. {(product.price * quantity).toFixed(2)}
           </p>
           <button 
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Add to cart logic here
-            }}
-            disabled={product.stock === 0}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            onClick={handleAddToCart}
+            disabled={product.stock === 0 || loading}
           >
-            Add to Cart
+            {loading ? (
+              <span className="loader border-2 border-t-2 border-green-200 border-t-green-600 rounded-full w-5 h-5 animate-spin"></span>
+            ) : success ? (
+              <span className="text-white">✔</span>
+            ) : (
+              "Add to Cart"
+            )}
           </button>
         </div>
+        {error && <div className="text-red-500 text-xs mt-2">{error}</div>}
+        <style jsx>{`.loader { display: inline-block; vertical-align: middle; }`}</style>
       </div>
     </div>
   );
@@ -77,10 +107,31 @@ const ProductCard = ({ product, onClick }) => {
 
 const ProductDetailPage = ({ product, onBack }) => {
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const increaseQty = () => setQuantity(prev => prev + 1);
   const decreaseQty = () => {
     if (quantity > 1) setQuantity(prev => prev - 1);
+  };
+
+  const handleAddToCart = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      await axios.post("/api/cart", {
+        productId: product.id || product._id,
+        quantity,
+      });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 1200);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add to cart");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,21 +167,31 @@ const ProductDetailPage = ({ product, onBack }) => {
             </div>
             <div className="flex items-center justify-between m-6">
               <div className="flex items-center gap-4">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">-</button>
+                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700" disabled={loading}>-</button>
                 <span className="text-xl font-semibold text-red-600">{quantity}</span>
-                <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700">+</button>
+                <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700" disabled={loading}>+</button>
               </div>
-
               <div className="text-lg font-semibold text-gray-800">
                 {product.stock} available
               </div>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-2xl font-bold text-green-600">Rs. {(product.price * quantity).toFixed(2)}</p>
-              <button className="font-semibold shadow px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={product.stock === 0}>
-                Add to Cart</button>
+              <button className="font-semibold shadow px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                disabled={product.stock === 0 || loading}
+                onClick={handleAddToCart}
+              >
+                {loading ? (
+                  <span className="loader border-2 border-t-2 border-green-200 border-t-green-600 rounded-full w-5 h-5 animate-spin"></span>
+                ) : success ? (
+                  <span className="text-white">✔</span>
+                ) : (
+                  "Add to Cart"
+                )}
+              </button>
             </div>
+            {error && <div className="text-red-500 text-xs mt-2">{error}</div>}
+            <style jsx>{`.loader { display: inline-block; vertical-align: middle; }`}</style>
           </div>
         </div>
       </div>

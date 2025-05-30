@@ -7,7 +7,7 @@ const ArticleCard = ({ title, imageUrl, date, className = "" }) => {
   const slug = title.toLowerCase().replace(/ /g, "-");
 
   return (
-    <Link href={`/${slug}`}>
+    <Link href={`store/${slug}`}>
       <div className={`relative w-[300px] h-[220px] rounded-xl overflow-hidden font-sans group cursor-pointer ${className}`}>
         <img
           src={imageUrl}
