@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import User from "@/models/User";
 import bcryptjs from "bcryptjs";
-import { sendEmail } from "@/lib/mailer";
 import dbConnect from "@/lib/dbConnect";
 import jwt from "jsonwebtoken";
 
-dbConnect();
+await dbConnect();
 
 export async function POST(request) {
     try {
@@ -31,7 +30,7 @@ export async function POST(request) {
         }
 
         // Check if the user is verified
-        if (!user.isVerfied) {
+        if (!user.isVerified) {
             return NextResponse.json({ error: "User not verified" }, { status: 403 });
         }
 
@@ -56,7 +55,7 @@ export async function POST(request) {
             // maxAge: 60 * 60, // 1 hour
         });
 
-        return NextResponse.json({ message: "Login successful", userId: user._id }, { status: 200 });
+        return response;
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

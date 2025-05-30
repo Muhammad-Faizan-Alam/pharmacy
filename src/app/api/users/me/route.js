@@ -1,8 +1,9 @@
 import { getDataFromToken } from "../../../../lib/getDataFromToken";
 import User from "../../../../models/User";
 import dbconnect from "@/lib/dbConnect";
+import { NextResponse } from "next/server";
 
-dbconnect();
+await dbconnect();
 
 export async function POST(request) {
     // extract data from token

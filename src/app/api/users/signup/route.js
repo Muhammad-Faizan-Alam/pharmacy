@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import { sendEmail } from "@/lib/mailer";
 import dbConnect from "@/lib/dbConnect";
 
-dbConnect();
+await dbConnect();
 
 export async function POST(request) {
     try {
