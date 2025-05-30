@@ -3,3 +3,4 @@ nextauth
 nodemailer
 bcrypt
 jsonwebtoken
+axios
