@@ -112,7 +112,7 @@ function AllProduct() {
   ];
 
   return (
-    <section className="py-8 bg-[#343148FF] min-h-screen">
+    <section className="py-28 bg-[#343148FF] min-h-screen">
       <div className="container mx-auto px-4">
         {statusMsg && (
           <div className={`mb-4 p-3 rounded-md text-center font-semibold shadow-lg ${statusMsg.isError ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>

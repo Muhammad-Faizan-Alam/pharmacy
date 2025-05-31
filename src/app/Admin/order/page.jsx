@@ -80,7 +80,7 @@ export default function AdminOrdersPage() {
     });
 
     return (
-        <section className="py-8 bg-[#343148FF] min-h-screen">
+        <section className="py-28 bg-[#343148FF] min-h-screen">
             <div className="container mx-auto px-2 md:px-6">
                 <h2 className="text-3xl font-bold text-white mb-6">Admin Orders</h2>
                 <div className="flex flex-wrap gap-4 mb-4 items-center">

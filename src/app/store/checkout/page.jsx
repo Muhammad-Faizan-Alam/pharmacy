@@ -152,12 +152,12 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center py-10 px-2">
-      <div className="w-full max-w-5xl bg-white/90 rounded-3xl shadow-2xl p-8 md:p-12 flex flex-col md:flex-row gap-10 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center py-6 px-2 md:px-0">
+      <div className="w-full max-w-5xl bg-white/90 rounded-3xl shadow-2xl p-2 sm:p-4 md:p-8 flex flex-col md:flex-row gap-6 md:gap-10 relative overflow-hidden">
         {/* Checkout Form */}
-        <form className="flex-1 space-y-6" onSubmit={handleSubmit}>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2 tracking-tight drop-shadow">Checkout</h1>
-          <p className="text-gray-500 mb-6">Complete your order and enjoy fast, secure delivery!</p>
+        <form className="flex-1 space-y-6 min-w-0" onSubmit={handleSubmit}>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-blue-900 mb-2 tracking-tight drop-shadow">Checkout</h1>
+          <p className="text-gray-500 mb-6 text-sm sm:text-base">Complete your order and enjoy fast, secure delivery!</p>
 
           {/* Address Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
           {/* Payment Method */}
           <div>
             <label className="block font-semibold text-gray-700 mb-2">Payment Method</label>
-            <div className="flex gap-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
@@ -240,16 +240,16 @@ export default function CheckoutPage() {
           {/* Delivery Method */}
           <div>
             <label className="block font-semibold text-gray-700 mb-2">Delivery Method</label>
-            <div className="flex gap-8 flex-wrap">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 flex-wrap">
               {DELIVERY_OPTIONS.map((opt) => (
                 <button
                   type="button"
                   key={opt.value}
                   onClick={() => handleDeliveryChange(opt.value)}
-                  className={`group relative flex flex-col items-center border-2 rounded-2xl px-6 py-4 transition-all shadow-md hover:shadow-xl focus:outline-none ${form.deliveryMethod === opt.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}
+                  className={`group relative flex flex-col items-center border-2 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 transition-all shadow-md hover:shadow-xl focus:outline-none ${form.deliveryMethod === opt.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}
                 >
                   <span className="mb-2">{opt.svg}</span>
-                  <span className="font-bold text-blue-900 text-lg">{opt.label}</span>
+                  <span className="font-bold text-blue-900 text-base sm:text-lg">{opt.label}</span>
                   <span className="text-xs text-gray-500">{opt.desc}</span>
                   {form.deliveryMethod === opt.value && (
                     <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full shadow">Selected</span>
@@ -266,7 +266,7 @@ export default function CheckoutPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-green-400 text-white font-bold text-lg shadow-lg hover:scale-105 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3 mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-green-400 text-white font-bold text-base sm:text-lg shadow-lg hover:scale-105 transition disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Placing Order..." : "Place Order"}
@@ -274,9 +274,9 @@ export default function CheckoutPage() {
 
           {/* Success Message */}
           {success && (
-            <div className="mt-6 p-4 bg-green-100 border-l-4 border-green-500 rounded-xl text-green-800 text-center text-lg font-semibold shadow">
+            <div className="mt-6 p-4 bg-green-100 border-l-4 border-green-500 rounded-xl text-green-800 text-center text-base sm:text-lg font-semibold shadow">
               Order placed successfully!<br />
-              <span className="text-sm text-gray-600">Order ID: {orderId}</span>
+              <span className="text-xs sm:text-sm text-gray-600">Order ID: {orderId}</span>
               <br />
               <button
                 type="button"
@@ -291,24 +291,24 @@ export default function CheckoutPage() {
         </form>
 
         {/* Cart Summary */}
-        <div className="flex-1 bg-gradient-to-br from-blue-100 to-green-100 rounded-2xl shadow-lg p-6 md:p-8 flex flex-col gap-6 min-w-[320px] max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-blue-800 mb-2 flex items-center gap-2">
+        <div className="flex-1 bg-gradient-to-br from-blue-100 to-green-100 rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 flex flex-col gap-4 sm:gap-6 min-w-0 max-w-md mx-auto mt-8 md:mt-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-2 flex items-center gap-2">
             <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="7" cy="21" r="2" stroke="#0ea5e9" strokeWidth="2"/><circle cx="17" cy="21" r="2" stroke="#0ea5e9" strokeWidth="2"/></svg>
             Order Summary
           </h2>
           <div className="divide-y divide-blue-200">
             {cart.items.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 py-3">
-                <Image src={item.product.img || item.product.imageUrl} alt={item.product.name} width={56} height={56} className="rounded-lg shadow" />
+              <div key={i} className="flex items-center gap-2 sm:gap-4 py-2 sm:py-3">
+                <Image src={item.product.img || item.product.imageUrl} alt={item.product.name} width={40} height={40} className="rounded-lg shadow w-10 h-10 sm:w-14 sm:h-14" />
                 <div className="flex-1">
-                  <div className="font-semibold text-gray-800">{item.product.name}</div>
+                  <div className="font-semibold text-gray-800 text-xs sm:text-base">{item.product.name}</div>
                   <div className="text-xs text-gray-500">Qty: {item.quantity}</div>
                 </div>
-                <div className="font-bold text-blue-700">Rs. {(item.price * item.quantity).toFixed(2)}</div>
+                <div className="font-bold text-blue-700 text-xs sm:text-base">Rs. {(item.price * item.quantity).toFixed(2)}</div>
               </div>
             ))}
           </div>
-          <div className="mt-4 space-y-2 text-sm">
+          <div className="mt-4 space-y-2 text-xs sm:text-sm">
             <div className="flex justify-between">
               <span>Items Total</span>
               <span className="font-semibold">Rs. {itemsPrice.toFixed(2)}</span>
@@ -321,7 +321,7 @@ export default function CheckoutPage() {
               <span>Tax</span>
               <span className="font-semibold">Rs. {taxPrice.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-lg font-bold border-t pt-2">
+            <div className="flex justify-between text-base sm:text-lg font-bold border-t pt-2">
               <span>Total</span>
               <span className="text-green-700">Rs. {totalPrice.toFixed(2)}</span>
             </div>
@@ -329,13 +329,13 @@ export default function CheckoutPage() {
           <div className="mt-6 flex flex-col gap-2 items-center">
             {form.deliveryMethod === "regular" ? (
               <div className="flex flex-col items-center">
-                <span className="text-blue-700 font-semibold mb-1">Regular Delivery</span>
+                <span className="text-blue-700 font-semibold mb-1 text-xs sm:text-base">Regular Delivery</span>
                 {DELIVERY_OPTIONS[0].svg}
                 <span className="text-xs text-gray-500 mt-1">Your order will arrive in 2-4 days by van.</span>
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <span className="text-orange-600 font-semibold mb-1">Urgent Delivery</span>
+                <span className="text-orange-600 font-semibold mb-1 text-xs sm:text-base">Urgent Delivery</span>
                 {DELIVERY_OPTIONS[1].svg}
                 <span className="text-xs text-gray-500 mt-1">Your order will be delivered by drone in 2-6 hours!</span>
               </div>

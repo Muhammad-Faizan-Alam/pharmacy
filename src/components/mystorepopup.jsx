@@ -43,7 +43,7 @@ const PopupForm = ({ showPopup, setShowPopup, fields, onSubmit, title, initialDa
   if (!showPopup) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed top-13 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
         {/* Input fields for all product properties */}

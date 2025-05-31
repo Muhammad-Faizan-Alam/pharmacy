@@ -1,5 +1,4 @@
-'use client';
-import { Footer } from "@/components/Footer";
+import AdminFooter from "@/components/adminFooter";
 import { ProductsProvider } from "@/app/Context/ProductsContext";
 import AdminNavbar from "../../components/adminNavbar";
 
@@ -9,7 +8,7 @@ export default function AdminLayout({ children }) {
             <ProductsProvider> {/* ✅ Wrap with context provider */}
                 <AdminNavbar />
                 <main>{children}</main>
-                <Footer />
+                <AdminFooter />
             </ProductsProvider>
         </div>
     );

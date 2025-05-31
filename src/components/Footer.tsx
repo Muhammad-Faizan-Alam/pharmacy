@@ -14,8 +14,7 @@ export function Footer() {
             Saydaliyya
           </h1>
           <p className="">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor.
+            We offer a wide range of medicines and health products to help you stay healthy and happy. Our team is dedicated to providing you with the best service and support.
           </p>
         </div>
 
@@ -48,19 +47,19 @@ export function Footer() {
           <address className="not-italic space-y-2  cursor-pointer  transition">
             <div className="flex items-start hover:font-bold transition">
               <MapPin className="mr-2 h-7 w-7 mt-1 " />
-              <p className="">176 W Street Name, New York, NY 10014</p>
+              <p className="">Canal Road, Faisalabad, Pakistan</p>
             </div>
             <div className="flex items-center hover:font-bold transition">
               <Phone className="mr-2 h-7 w-7 " />
-              <p className="">(123) 456-78-90</p>
+              <p className="">(41) 456-78-90</p>
             </div>
             <div className="flex items-center hover:font-bold transition">
               <Smartphone className="mr-2 h-7 w-7 " />
-              <p className="">123-456-7890</p>
+              <p className="">+92 3184757136</p>
             </div>
             <div className="flex items-center hover:font-bold transition">
               <Mail className="mr-2 h-7 w-7 " />
-              <p className="">sales@example.com</p>
+              <p className="">saydaliyyaAdmin@gmail.com</p>
             </div>
           </address>
         </div>

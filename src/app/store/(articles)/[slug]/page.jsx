@@ -31,6 +31,9 @@ const ProductCard = ({ product, onClick }) => {
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 1200);
+      
+      // Dispatch cart-updated event for Navbar
+      window.dispatchEvent(new Event('cart-updated'));
     } catch (err) {
       setError(err.response?.data?.message || "Failed to add to cart");
     } finally {
@@ -164,8 +167,8 @@ const ProductDetailPage = ({ product, onBack }) => {
               <h2 className="text-xl font-semibold mb-1">Description:</h2>
               <p className="text-gray-700">{product.description}</p>
             </div>
-            <div className="flex items-center justify-between m-6">
-              <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between md:m-6 m-2">
+              <div className="flex items-center md:gap-4 gap-2">
                 <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700" disabled={loading}>-</button>
                 <span className="text-xl font-semibold text-red-600">{quantity}</span>
                 <button onClick={() => setQuantity(q => q + 1)} className="px-3 py-1 bg-gray-200 rounded text-xl font-bold text-gray-700" disabled={loading}>+</button>
@@ -314,7 +317,7 @@ const ArticleDetailCard = ({ params }) => {
           </aside>
           {/* Products Grid */}
           <section className="w-full md:w-3/4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="flex flex-wrap gap-6 justify-center">
               {currentProducts.length > 0 ? (
                 currentProducts.map(product => (
                   <div key={product.id} className="hover:scale-105 transition-transform duration-200">
