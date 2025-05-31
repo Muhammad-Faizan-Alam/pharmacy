@@ -92,7 +92,7 @@ const LoginPage = () => {
           </button>
         </form>
         <p className="mt-6 text-center text-gray-600 text-sm">
-          Don't have an account? <a href="/auth/signup" className="text-blue-600 hover:underline font-semibold">Sign Up</a>
+          Don't have an account? <a href="/signup" className="text-blue-600 hover:underline font-semibold">Sign Up</a>
         </p>
       </div>
       <style jsx>{`.loader { display: inline-block; vertical-align: middle; }`}</style>

@@ -40,7 +40,7 @@ const Navbar = () => {
     // Simulate debounce and search
     setTimeout(() => {
       setSearchLoading(false);
-      router.push(`/store?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/store/product?search=${encodeURIComponent(searchQuery.trim())}`);
     }, 600);
   };
 
@@ -52,6 +52,21 @@ const Navbar = () => {
     setTimeout(() => setLoadingLink(""), 1200); // fallback in case of slow navigation
   };
 
+  // Add this custom event listener for cart updates
+  useEffect(() => {
+    const handleCartUpdate = (e) => {
+      // Optionally, e.detail can have the new count
+      axios.get('/api/cart')
+        .then(res => {
+          const items = res.data?.data?.items || [];
+          setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+        })
+        .catch(() => setCartCount(0));
+    };
+    window.addEventListener('cart-updated', handleCartUpdate);
+    return () => window.removeEventListener('cart-updated', handleCartUpdate);
+  }, []);
+
   return (
     <header className="bg-primary text-white shadow-md">
       {/* Top Bar */}
@@ -62,10 +77,10 @@ const Navbar = () => {
               <img
                 src="/asset/logo.png"
                 alt="Logo"
-                className="h-16 w-16 mr-2"
+                className="h-16 w-16 mr-2 rounded-full shadow-lg"
               />
-              <span className="text-secondary">+</span>
-              <span className="text-secondary">MediCare</span>
+              {/* <span className="text-secondary">+</span> */}
+              <span className="text-secondary">Saydaliyya</span>
               {loadingLink === "/" && <FiLoader className="ml-2 animate-spin text-secondary" />}
             </div>
           </a>

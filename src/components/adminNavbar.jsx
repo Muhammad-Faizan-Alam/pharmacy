@@ -10,12 +10,12 @@ export default function AdminNavbar() {
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3">
             <img
-              src="/img/logo.png"
+              src="/asset/logo.png"
               className="h-10 w-10 rounded-full"
               alt="Pharmacy Logo"
             />
             <span className="self-center text-2xl font-bold tracking-wide text-white">
-              Pharmacy
+              Saydaliyya
             </span>
           </Link>
           {/* Toggle for mobile */}

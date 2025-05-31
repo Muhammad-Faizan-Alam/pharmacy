@@ -11,7 +11,7 @@ export function Footer() {
         {/* Store Info */}
         <div className="space-y-4">
           <h1 className="text-2xl text-white font-bold  cursor-pointer ">
-            Pharm online store
+            Saydaliyya
           </h1>
           <p className="">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
@@ -84,7 +84,7 @@ export function Footer() {
       {/* Copyright */}
       <div className="mt-12 pt-8 border-t border-primary text-center text-gray-500">
         <p>
-          © {new Date().getFullYear()} Pharm Online Store. All rights reserved.
+          © {new Date().getFullYear()} Saydaliyya. All rights reserved.
         </p>
       </div>
     </footer>
