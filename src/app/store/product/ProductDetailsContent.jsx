@@ -1,5 +1,4 @@
 "use client";
-import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useProducts } from "@/app/Context/ProductsContext";
@@ -8,11 +7,10 @@ import { useState } from "react";
 const ProductDetailsContent = () => {
     const searchParams = useSearchParams();
     const search = searchParams.get("search") || "";
-    const { products, loading, error } = useProducts(); // <-- useProducts is a hook, not a context
+    const { products, loading, error } = useProducts();
     const [addingId, setAddingId] = useState(null);
     const [addMsg, setAddMsg] = useState("");
 
-    // Filter products by name (case-insensitive, partial match)
     const filteredProducts = search
         ? products.filter(p => p.name && p.name.toLowerCase().includes(search.toLowerCase()))
         : [];
@@ -28,7 +26,6 @@ const ProductDetailsContent = () => {
             });
             if (!res.ok) throw new Error("Failed to add to cart");
             setAddMsg("Added to cart!");
-            // Dispatch cart-updated event for Navbar
             window.dispatchEvent(new Event('cart-updated'));
         } catch (e) {
             setAddMsg("Error: " + e.message);
@@ -79,10 +76,4 @@ const ProductDetailsContent = () => {
     );
 };
 
-export default function ProductDetails() {
-    return (
-        <Suspense fallback={<div className="text-center py-16 text-gray-500 text-lg">Loading...</div>}>
-            <ProductDetailsContent />
-        </Suspense>
-    );
-}
+export default ProductDetailsContent;
