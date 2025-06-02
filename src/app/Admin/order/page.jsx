@@ -10,6 +10,8 @@ function currency(val) {
     return `PKR ${Number(val).toLocaleString()}`;
 }
 
+const ORDERS_PER_PAGE = 10;
+
 export default function AdminOrdersPage() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +20,7 @@ export default function AdminOrdersPage() {
     const [expanded, setExpanded] = useState({});
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState({ status: "", delivery: "" });
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -78,6 +81,11 @@ export default function AdminOrdersPage() {
             : true;
         return userMatch && statusMatch && deliveryMatch;
     });
+    const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
+    const paginatedOrders = filteredOrders.slice(
+        (currentPage - 1) * ORDERS_PER_PAGE,
+        currentPage * ORDERS_PER_PAGE
+    );
 
     return (
         <section className="py-28 bg-[#343148FF] min-h-screen">
@@ -133,10 +141,10 @@ export default function AdminOrdersPage() {
                         <tbody className="divide-y divide-gray-200 text-sm">
                             {loading ? (
                                 <tr><td colSpan="9" className="text-center py-8">Loading orders...</td></tr>
-                            ) : filteredOrders.length === 0 ? (
+                            ) : paginatedOrders.length === 0 ? (
                                 <tr><td colSpan="9" className="text-center py-8">No orders found</td></tr>
                             ) : (
-                                filteredOrders.map(order => (
+                                paginatedOrders.map(order => (
                                     <>
                                     <tr key={order._id} className="hover:bg-[#343148FF]/10 transition cursor-pointer" onClick={() => setExpanded(e => ({...e, [order._id]: !e[order._id]}))}>
                                         <td className="px-4 py-3 font-mono text-xs">{order._id}</td>
@@ -215,6 +223,34 @@ export default function AdminOrdersPage() {
                             )}
                         </tbody>
                     </table>
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex justify-center mt-6 gap-2">
+                            <button
+                                className="px-3 py-1 rounded bg-blue-500 text-white font-bold disabled:opacity-50"
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                            >
+                                Prev
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button
+                                    key={i + 1}
+                                    className={`px-3 py-1 rounded font-bold ${currentPage === i + 1 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                className="px-3 py-1 rounded bg-blue-500 text-white font-bold disabled:opacity-50"
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

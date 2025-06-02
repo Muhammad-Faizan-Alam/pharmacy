@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import PopupForm from "@/components/mystorepopup";
 import { useRouter } from "next/navigation";
 const API_URL = "/api/products";
+const PRODUCTS_PER_PAGE = 15;
 
 function AllProduct() {
   const [products, setProducts] = useState([]);
@@ -14,6 +15,7 @@ function AllProduct() {
   const [statusMsg, setStatusMsg] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchProducts();
@@ -111,6 +113,12 @@ function AllProduct() {
     { name: "img", label: "Image URL", type: "text" }
   ];
 
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
   return (
     <section className="py-28 bg-[#343148FF] min-h-screen">
       <div className="container mx-auto px-4">
@@ -164,10 +172,10 @@ function AllProduct() {
                 <tbody className="bg-[#D7C49EFF] divide-y divide-gray-300 text-sm">
                   {loading ? (
                     <tr><td colSpan="6" className="text-center py-4 text-white font-semibold animate-pulse">Loading products...</td></tr>
-                  ) : filteredProducts.length === 0 ? (
+                  ) : paginatedProducts.length === 0 ? (
                     <tr><td colSpan="6" className="text-center py-4 text-white font-semibold">No products found</td></tr>
                   ) : (
-                    filteredProducts.map(product => (
+                    paginatedProducts.map(product => (
                       <tr key={product._id} className="hover:bg-[#343148FF] hover:text-white font-medium transition">
                         <td className="px-4 py-2">
                           <img src={product.img || "/asset/img/1.webp"} alt={product.name} className="w-16 h-16 object-cover rounded shadow border border-[#343148FF]" />
@@ -197,6 +205,34 @@ function AllProduct() {
                   )}
                 </tbody>
               </table>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6 gap-2">
+                  <button
+                    className="px-3 py-1 rounded bg-blue-500 text-white font-bold disabled:opacity-50"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i + 1}
+                      className={`px-3 py-1 rounded font-bold ${currentPage === i + 1 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    className="px-3 py-1 rounded bg-blue-500 text-white font-bold disabled:opacity-50"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           {(showPopup || showEditPopup) && (

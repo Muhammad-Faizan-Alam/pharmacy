@@ -8,29 +8,40 @@ const DELIVERY_OPTIONS = [
   {
     value: "regular",
     label: "Regular Delivery",
-    desc: "Delivered in 2-4 days",
+    desc: "Delivered in 2-4 days by van",
     svg: (
       <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Van icon */}
         <rect x="2" y="18" width="40" height="16" rx="4" fill="#38bdf8" />
         <rect x="42" y="24" width="14" height="10" rx="2" fill="#0ea5e9" />
         <circle cx="14" cy="36" r="4" fill="#0f172a" />
         <circle cx="48" cy="34" r="4" fill="#0f172a" />
         <rect x="6" y="22" width="8" height="4" rx="2" fill="#bae6fd" />
+        <rect x="30" y="24" width="8" height="4" rx="2" fill="#bae6fd" />
       </svg>
     ),
   },
   {
     value: "urgent",
     label: "Urgent Delivery",
-    desc: "Delivered in 2-6 hours",
+    desc: "Delivered in 2-6 hours by drone",
     svg: (
       <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Drone icon */}
         <ellipse cx="30" cy="36" rx="18" ry="4" fill="#bae6fd" />
-        <rect x="18" y="18" width="24" height="10" rx="4" fill="#fbbf24" />
-        <polygon points="30,10 36,18 24,18" fill="#f59e42" />
-        <rect x="26" y="12" width="8" height="4" rx="2" fill="#fbbf24" />
-        <circle cx="22" cy="32" r="3" fill="#0f172a" />
-        <circle cx="38" cy="32" r="3" fill="#0f172a" />
+        {/* Drone body */}
+        <rect x="22" y="18" width="16" height="8" rx="3" fill="#fbbf24" stroke="#f59e42" strokeWidth="1.5" />
+        {/* Drone arms */}
+        <rect x="16" y="21" width="10" height="2" rx="1" fill="#f59e42" />
+        <rect x="34" y="21" width="10" height="2" rx="1" fill="#f59e42" />
+        {/* Propellers */}
+        <ellipse cx="16" cy="22" rx="3" ry="1.2" fill="#fbbf24" stroke="#f59e42" strokeWidth="0.7" />
+        <ellipse cx="44" cy="22" rx="3" ry="1.2" fill="#fbbf24" stroke="#f59e42" strokeWidth="0.7" />
+        {/* Camera */}
+        <circle cx="30" cy="22" r="2" fill="#0f172a" />
+        {/* Landing gear */}
+        <rect x="25" y="26" width="2" height="5" rx="1" fill="#f59e42" />
+        <rect x="33" y="26" width="2" height="5" rx="1" fill="#f59e42" />
       </svg>
     ),
   },

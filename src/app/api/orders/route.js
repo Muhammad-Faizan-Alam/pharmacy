@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '@/models/Order';
+import User from '@/models/User';
 import { getDataFromToken } from '@/lib/getDataFromToken';
 
 // GET: Get all orders for the authenticated user
@@ -9,7 +10,17 @@ export async function GET(req) {
   try {
     const userId = await getDataFromToken(req);
     if (!userId) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+    // Fetch user to check admin
+    const user = await User.findById(userId);
+    if (!user) return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    let orders;
+    if (user.isAdmin) {
+      // Admin: get all orders
+      orders = await Order.find({}).sort({ createdAt: -1 });
+    } else {
+      // Regular user: get only their orders
+      orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+    }
     return NextResponse.json({ success: true, data: orders });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
