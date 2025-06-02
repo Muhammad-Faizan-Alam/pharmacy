@@ -3,8 +3,20 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MediCare Pharmacy",
-  description: "Your trusted online pharmacy",
+  title: "Saydaliyya Pharmacy",
+  description: "Your trusted online site, to get all medical supplies",
+  keywords: [
+    "pharmacy",
+    "medical supplies",
+    "healthcare",
+    "online pharmacy",
+    "medicine",
+    "prescription drugs",
+    "over-the-counter",
+    "wellness",
+    "health products",
+    "medical store",
+  ],
 };
 
 export default function RootLayout({

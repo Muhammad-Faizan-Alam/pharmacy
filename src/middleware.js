@@ -5,7 +5,6 @@ const middleware = (request) => {
     const path = request.nextUrl.pathname;
     const isPublicPath = path === '/login' || path === '/signup' || path === '/verifyemail' || path === '/reset-password';
     const token = request.cookies.get('token')?.value || '';
-    console.log('Middleware token:', token);
 
     // Allow all users to access admin routes, regardless of isAdmin
     // (If you want to restrict, you would need to decode the token and check isAdmin)
