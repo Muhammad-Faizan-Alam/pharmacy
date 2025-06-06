@@ -13,15 +13,17 @@ const Navbar = () => {
   const [cartCount, setCartCount] = useState(0);
   const [loadingLink, setLoadingLink] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
+  const [toggle, setToggle] = useState(false);
+  const [result, setResult] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const user = axios.post('/api/users/me')
-    .then(response => {
-      // Handle user data if needed
-      console.log("User data:", response.data);
-      setUser(response.data.data);
-    })
+      .then(response => {
+        // Handle user data if needed
+        console.log("User data:", response.data);
+        setUser(response.data.data);
+      })
 
     // Fetch cart count
     axios.get('/api/cart')
@@ -35,13 +37,33 @@ const Navbar = () => {
   // Advanced search handler
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
     setSearchLoading(true);
-    // Simulate debounce and search
-    setTimeout(() => {
+    if (!searchQuery.trim()) return;
+    if (toggle) {
+      setResult("");
+      try {
+        const res = await fetch("/api/symptom-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ symptomText: searchQuery }),
+        });
+        const data = await res.json();
+        if (data.result) {
+          setResult(data.result);
+        } else {
+          setResult("No suggestions found.");
+        }
+      } catch (error) {
+        setResult("Error: " + error.message);
+      }
       setSearchLoading(false);
-      router.push(`/store/product?search=${encodeURIComponent(searchQuery.trim())}`);
-    }, 600);
+    } else {
+      // Simulate debounce and search
+      setTimeout(() => {
+        setSearchLoading(false);
+        router.push(`/store/product?search=${encodeURIComponent(searchQuery.trim())}`);
+      }, 600);
+    }
   };
 
   // Loader wrapper for navigation links
