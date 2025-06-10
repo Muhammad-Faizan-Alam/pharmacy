@@ -14,6 +14,7 @@ const Navbar = () => {
   const [loadingLink, setLoadingLink] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
+  const [showAIPopup, setShowAIPopup] = useState(false);
   const [result, setResult] = useState("");
   const router = useRouter();
 
@@ -41,11 +42,15 @@ const Navbar = () => {
     if (!searchQuery.trim()) return;
     if (toggle) {
       setResult("");
+      console.log("searchedData", searchQuery);
+      const body = {
+        "symptomText": searchQuery
+      }
       try {
         const res = await fetch("/api/symptom-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ symptomText: searchQuery }),
+          body: JSON.stringify(body),
         });
         const data = await res.json();
         if (data.result) {
@@ -89,6 +94,11 @@ const Navbar = () => {
     return () => window.removeEventListener('cart-updated', handleCartUpdate);
   }, []);
 
+  useEffect(() => {
+    if (result && toggle) setShowAIPopup(true);
+    else setShowAIPopup(false);
+  }, [result, toggle]);
+
   return (
     <header className="bg-primary text-white shadow-md">
       {/* Top Bar */}
@@ -109,12 +119,28 @@ const Navbar = () => {
         </div>
 
         {/* Search Bar - Desktop */}
-        <div className="hidden md:flex flex-1 mx-8 max-w-xl">
+        <div className="hidden md:flex flex-1 mx-8 max-w-xl bg-secondary rounded-full p-0.5">
+          <div className="flex items-center gap-2 px-1">
+            <span className={`font-semibold text-xs sm:text-sm ${toggle ? 'text-teal-500' : 'text-primary'}`}>Search</span>
+            <button
+              type="button"
+              onClick={() => setToggle(t => !t)}
+              className={`relative w-12 h-6 rounded-full transition-colors duration-300 focus:outline-none ${toggle ? 'bg-teal-500' : 'bg-primary'}`}
+              aria-pressed={toggle}
+              aria-label="Toggle AI Search"
+            >
+              <span
+                className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-300 ${toggle ? 'translate-x-6' : ''}`}
+                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+              />
+            </button>
+            <span className="font-semibold text-xs sm:text-sm text-primary">AI</span>
+          </div>
           <form className="relative w-full" onSubmit={handleSearch}>
             <input
               type="text"
               placeholder="Search entire store here..."
-              className="w-full py-2 px-4 border-2 border-secondary rounded-full text-gray-800 focus:outline-none"
+              className="w-full py-2 px-4 bg-primary rounded-full text-gray-800 focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               disabled={searchLoading}
@@ -167,6 +193,22 @@ const Navbar = () => {
         <div className="md:hidden bg-teal-800 absolute w-full z-10 shadow-lg">
           {/* Mobile Search */}
           <div className="p-4 border-b border-teal-700">
+            <div className="flex items-center gap-2 m-5">
+              <span className={`font-semibold text-xs sm:text-sm ${toggle ? 'text-teal-500' : 'text-primary'}`}>Search</span>
+              <button
+                type="button"
+                onClick={() => setToggle(t => !t)}
+                className={`relative w-12 h-6 rounded-full transition-colors duration-300 focus:outline-none ${toggle ? 'bg-teal-500' : 'bg-primary'}`}
+                aria-pressed={toggle}
+                aria-label="Toggle AI Search"
+              >
+                <span
+                  className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-300 ${toggle ? 'translate-x-6' : ''}`}
+                  style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+                />
+              </button>
+              <span className="font-semibold text-xs sm:text-sm text-primary">AI</span>
+            </div>
             <form className="relative" onSubmit={handleSearch}>
               <input
                 type="text"
@@ -181,6 +223,7 @@ const Navbar = () => {
               </button>
             </form>
           </div>
+
 
           {/* Mobile Categories - Using NavbarMedicine's mobile view */}
           <div className="p-4">
@@ -198,6 +241,25 @@ const Navbar = () => {
               {user === null ? "user" : user.username}
               {loadingLink === "/profile" && <FiLoader className="ml-2 animate-spin text-white" />}
             </a>
+          </div>
+        </div>
+      )}
+      {showAIPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative animate-fade-in">
+            <button
+              className="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl font-bold"
+              onClick={() => setShowAIPopup(false)}
+              aria-label="Close AI Result"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-bold text-teal-700 mb-2 flex items-center gap-2">
+              <FiSearch className="inline-block text-teal-500" /> AI Result
+            </h3>
+            <div className="text-gray-700 whitespace-pre-line text-base min-h-[60px]">
+              {result}
+            </div>
           </div>
         </div>
       )}

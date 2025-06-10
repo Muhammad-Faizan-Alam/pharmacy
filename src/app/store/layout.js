@@ -15,7 +15,6 @@ export default function ArticlesLayout({ children }) {
         script.domain = "www.chatbase.co";
         document.body.appendChild(script);
     }, []);
-
     return (
         <div>
             <ProductsProvider>

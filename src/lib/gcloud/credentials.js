@@ -1,0 +1,13 @@
+const credentials = {
+    "type": "service_account",
+    "project_id": "e-pharmacy-vision",
+    "private_key_id": "e51d8892ff0865d07c6bee3f9421a463e6ce3436",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDcbuUSLJgVnbGh\nHu1wncyERaPgZ+Muzo/+hnujwNyjsxhlQ7izTqp8d+7NX+1/SdE7IO+zAtYoE0nV\n8JilagxHAwyfoEw3caHKmARXOHv5KFuApbCxxrSAD3mHTqA9qzr44ROMh8rwtZo0\ntCA8asF5UPQ83spprJcWGbAAJ9EVk4yqWmu5ubeezTdxpaFIIK4QDTBdh6kK/79x\nv+rH2mNsuBEsH8JUji0XcMpZVl4pgsrfiFvuuS4pR5aQOpIQjPSTa1Ju3JVOuqL7\nCRKA8MdyGzRX3kkkVbfKCzcKZO1xKVzTxerQm+tBCte8WUc+8sbmlNjU1irkhV7g\nEbh0wi4dAgMBAAECggEALwrqj5mdPlW4VBiP1y4R+LONAOXi3bkfEVRdfAm7fKMK\nxIeyme+ioiwNNl6vxm+4O5xwkz06e3R8WDA/v2N1qcz8i29v/JAfVWdiW8PV70s9\n1eNmZVYw7LiAuM/ekjKiA/2yyJWtSXgUKAW98G7fCdctPHVWcL1ww/po7WuR6z67\nrizUC/MW04JpWjIEIcv1Bwf/IC17cNhwoQH+PdLEGw7bDwTEcYrfC7GogPxjRtMN\nKE0TK0Xw8ODHH+GryYiyzvVO8crVrHYaQ+giyQO3Gw1ehLPKQv+4CWqcpTv4tc5t\ngXRfDK0UEyOfRZAgt9pxRof87kwIq+0fOZX+Np7WSQKBgQD5SukZKS2UZV9IiYrE\n7CEyUxehK5CDRX5FFwNnrl5rNRIXvrmXFdecSElKSbF3zMYnElZXURiFCQmbQJoq\nyQvlllhlPs4ue2sDSfPMFo9r2fBqPIuW8t5IR4aPagk2ZCWU5BaogNkD1PWYHWEK\nuSSSUWf6ld4WVI8HoloOc9rilQKBgQDiXTRzFKSFr+6svc64eCEON9vhh/j1Gurk\n2dERMchCvCPrfcsRl1x/BE3ytnmhM9OiWoqYPzcSZya0M+6oZBS+qPKyC/FKTrRz\nOjF7a5fJQ+W8zZ9vWPGBvzqS9Ie8hxfhw9JyoxPQwPCcWUHgTMSr4KQhkPmN6Xdt\n642BVKWDaQKBgDhhbtKX840KWEBpiw76cI+XJ1L2LVrjDqnFiKmcUBJjEFJ6ejLn\nZ7oaxyib/h0gHPidNxXMa4U7BAcu1y8yBRTJqfhL+gmdNBisUw0nVQyJX8xHITLk\nfs1OD+rDio3YnH9ODqnRakNpmJnsmxP3x4OoEaIk3vOh8C9D0qZOIYT5AoGBAIBo\nsQ0rQ50WzUUusyrP8qh3JYONt7uLFn7V1RR08g5xXcsD5ANJos3m6jTqMJsypDZw\nODjfe2U0IK+O2i6p/16cxngb8Dff59uJwnIp+cPRgWyWFIB8qxuYGCkvECTxWanX\nhPVE70O3f4ah143e3p5F47Wq4PYQ34/6VJ5uHyopAoGBAJF54vkLZLYg4qqZ798A\n25omDR3s0FQPQrkx1+RzXlVIcKrbf1vZi5UzVbB1ibVSdRiOQGBdHbh/tlD9Wn21\nHgqyEb+NB3aGzgGoKDEejyfPabHi2SEOeEpm/+puafEEiyI22c7wgvzCKY5WQWOR\n1Zd05YJDqp6tCgeoosEynk9V\n-----END PRIVATE KEY-----\n",
+    "client_email": "e-pharmacy-vision-sa@e-pharmacy-vision.iam.gserviceaccount.com",
+    "client_id": "116947649954718778200",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/e-pharmacy-vision-sa%40e-pharmacy-vision.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
