@@ -320,7 +320,7 @@ const ArticleDetailCard = ({ params }) => {
             <div className="flex flex-wrap gap-6 justify-center">
               {currentProducts.length > 0 ? (
                 currentProducts.map(product => (
-                  <div key={product.id} className="hover:scale-105 transition-transform duration-200">
+                  <div key={product._id} className="hover:scale-105 transition-transform duration-200">
                     <ProductCard product={product} onClick={() => setSelectedProduct(product)} />
                   </div>
                 ))
@@ -689,7 +689,7 @@ export default ArticleDetailCard;
 //               {currentProducts.length > 0 ? (
 //                 currentProducts.map((product) => (
 //                   <ProductCard 
-//                     key={product.id} 
+//                     key={product._id} 
 //                     product={product} 
 //                     onClick={() => handleProductClick(product)}
 //                   />
