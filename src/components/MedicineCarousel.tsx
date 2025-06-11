@@ -97,7 +97,7 @@ export function MedicineCarousel() {
   }, [api]);
 
   return (
-    <div className="relative w-full max-w-8xl mx-auto px-2 py-2">
+    <div className="relative w-full max-w-5xl mx-auto px-2 py-2">
       <Carousel
         setApi={setApi}
         className="w-full rounded-xl overflow-hidden shadow-lg border border-gray-200"
@@ -109,17 +109,17 @@ export function MedicineCarousel() {
         <CarouselContent>
           {MEDICINE_CAROUSEL_ITEMS.map((item) => (
             <CarouselItem key={item.id}>
-              {/* Responsive height with different values for mobile/tablet/desktop */}
-              <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] w-full">
+              {/* Responsive aspect ratio for 1281x505 images */}
+              <div className="relative w-full aspect-[2.54] max-h-[505px]">
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
                   className="object-cover"
                   priority
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
+                  sizes="100vw"
                 />
-                {/* Responsive content overlay */}
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-4 sm:p-8 md:p-12 lg:p-16">
                   <div className="text-white max-w-xs sm:max-w-sm md:max-w-md">
                     <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
@@ -138,11 +138,9 @@ export function MedicineCarousel() {
           ))}
         </CarouselContent>
         
-        {/* Navigation Arrows - responsive sizing */}
+        {/* Navigation and indicators (unchanged) */}
         <CarouselPrevious className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-teal-800 border-none size-8 sm:size-10 shadow-md hover:scale-110 transition" />
         <CarouselNext className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-teal-800 border-none size-8 sm:size-10 shadow-md hover:scale-110 transition" />
-        
-        {/* Indicators - responsive spacing and sizing */}
         <div className="flex justify-center absolute left-1/2 bottom-2 sm:bottom-3 md:bottom-4 gap-1 sm:gap-2 transform -translate-x-1/2">
           {Array.from({ length: MEDICINE_CAROUSEL_ITEMS.length }).map((_, index) => (
             <button

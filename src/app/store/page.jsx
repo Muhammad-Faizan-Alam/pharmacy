@@ -7,8 +7,14 @@ import PrescriptionUpload from "@/components/perceptionUpload";
 const page = () => {
   return (
     <>
-      <MedicineCarousel />
-      <PrescriptionUpload />
+      <div className="flex flex-col lg:flex-row gap-6 items-start w-full max-w-7xl mx-auto px-2 py-6">
+        <div className="flex-1">
+          <MedicineCarousel />
+        </div>
+        <div className="flex-1 w-full max-w-md">
+          <PrescriptionUpload />
+        </div>
+      </div>
       <ArticlesSection />
       <FeaturesSection />
       <BrandMarqee />
