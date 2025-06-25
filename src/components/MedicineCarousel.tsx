@@ -1,6 +1,3 @@
-
-
-
 // app/components/MedicineCarousel.tsx
 "use client";
 
@@ -110,7 +107,7 @@ export function MedicineCarousel() {
           {MEDICINE_CAROUSEL_ITEMS.map((item) => (
             <CarouselItem key={item.id}>
               {/* Responsive aspect ratio for 1281x505 images */}
-              <div className="relative w-full aspect-[2.54] max-h-[505px]">
+              <div className="relative w-full aspect-[2.2] max-h-[600px] min-h-[220px]">
                 <Image
                   src={item.image}
                   alt={item.title}
