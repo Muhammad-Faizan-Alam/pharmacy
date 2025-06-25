@@ -58,18 +58,18 @@ const CartPage = () => {
     }
   };
 
-//   const clearCart = async () => {
-//     setUpdating(true);
-//     setError(null);
-//     try {
-//       await axios.delete('/api/cart');
-//       await fetchCart();
-//     } catch (err) {
-//       setError(err.response?.data?.message || 'Failed to clear cart.');
-//     } finally {
-//       setUpdating(false);
-//     }
-//   };
+  const clearCart = async () => {
+    setUpdating(true);
+    setError(null);
+    try {
+      await axios.delete('/api/cart', { data: {} }); // No productId clears all
+      await fetchCart();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to clear cart.');
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const handleCheckout = () => {
     router.push('/store/checkout');
@@ -90,9 +90,13 @@ const CartPage = () => {
           <div className="text-red-600 text-center font-semibold mb-4">{error}</div>
         ) : !cart || !cart.items || cart.items.length === 0 ? (
           <div className="text-center py-20">
-            <img src="/asset/empty-cart.png" alt="Empty Cart" className="mx-auto w-32 h-32 sm:w-40 sm:h-40 opacity-80 mb-6" onError={e => e.target.style.display='none'} />
+            <img src="/asset/empty-cart.png" alt="Empty Cart" className="mx-auto w-32 h-32 sm:w-40 sm:h-40 opacity-80 mb-6" onError={e => e.target.style.display = 'none'} />
             <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-2">Your cart is empty!</h2>
             <p className="text-gray-500">Add some products to see them here.</p>
+            <Link href="/" className="px-4 py-2 w-56 mx-auto mt-5 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold shadow flex items-center justify-center">
+              <FiShoppingCart className="inline-block mr-2" />
+              Go to Store
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
@@ -163,6 +167,15 @@ const CartPage = () => {
                   <span>Total Items:</span>
                   <span className="text-blue-700 font-bold">{cart.items.reduce((sum, i) => sum + i.quantity, 0)}</span>
                 </div>
+                <button
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition font-semibold shadow flex items-center justify-center disabled:opacity-50"
+                  onClick={clearCart}
+                  disabled={updating || cart.items.length === 0}
+                  title="Remove all items from cart"
+                >
+                  <FiTrash2 className="inline-block mr-2" />
+                  Clear Cart
+                </button>
               </div>
             </div>
             {/* Cart Summary */}
@@ -188,7 +201,7 @@ const CartPage = () => {
                   disabled={updating || cart.items.length === 0}
                 >
                   <span className="inline-block group-hover:scale-110 transition-transform duration-200">
-                    <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="7" cy="21" r="2" stroke="#fff" strokeWidth="2"/><circle cx="17" cy="21" r="2" stroke="#fff" strokeWidth="2"/></svg>
+                    <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx="7" cy="21" r="2" stroke="#fff" strokeWidth="2" /><circle cx="17" cy="21" r="2" stroke="#fff" strokeWidth="2" /></svg>
                   </span>
                   <span>Proceed to Checkout</span>
                 </button>

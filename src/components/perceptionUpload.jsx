@@ -1,6 +1,8 @@
 'use client';
 import { useState, useRef } from 'react';
 import Tesseract from "tesseract.js";
+import axios from 'axios';
+import { useProducts } from "@/app/Context/ProductsContext";
 
 export default function OCRPage() {
   const [file, setFile] = useState(null);
@@ -10,7 +12,9 @@ export default function OCRPage() {
   const [rawText, setRawText] = useState('');
   const [cartMsg, setCartMsg] = useState('');
   const [showPopover, setShowPopover] = useState(false);
+  const [success, setSuccess] = useState(false);
   const cardRef = useRef(null);
+    const { products } = useProducts();
 
   const handleUpload = async () => {
     if (!file) return;
@@ -43,33 +47,35 @@ export default function OCRPage() {
     setLoading(false);
   };
 
-  // Add to cart handler
-  const handleAddToCart = async () => {
-    if (!result || result.length === 0) return;
+  // Add this function inside your OCRPage component, before the return:
+  const handleAddToCart = async (e, med) => {
+    e.stopPropagation();
     setCartMsg('');
-    let added = [];
-    let notFound = [];
-
-    for (const med of result) {
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: med.name, quantity: med.quantity }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        added.push(med.name);
-      } else {
-        notFound.push(med.name);
-      }
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    const existingProduct = products.find(p => p.name.toLowerCase() === med.name.toLowerCase());
+    console.log("Found product:", existingProduct);
+    if (!existingProduct) {
+      setError(`Product "${med.name}" not found in the product list.`);
+      setCartMsg(`❌ ${med.name} not available.`);
+      return;
     }
-
-    if (added.length > 0 && notFound.length === 0) {
-      setCartMsg("✅ All medicines added to cart!");
-    } else if (added.length > 0) {
-      setCartMsg(`✅ Added: ${added.join(", ")}. ❌ Not available: ${notFound.join(", ")}`);
-    } else {
-      setCartMsg("❌ None of the medicines are available in the store.");
+    
+    try {
+      await axios.post("/api/cart", {
+        productId: existingProduct.id || existingProduct._id, // Make sure med has id/_id
+        quantity: med.quantity || 1, // Default to 1 if quantity not specified
+      });
+      setSuccess(true);
+      setCartMsg(`✅ ${med.name} added to cart!`);
+      setTimeout(() => setSuccess(false), 1200);
+      window.dispatchEvent(new Event('cart-updated'));
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add to cart");
+      setCartMsg(`❌ ${med.name} not available.`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,15 +148,20 @@ export default function OCRPage() {
                       <span className="inline-flex items-center justify-center w-6 h-6 bg-teal-100 rounded-full shadow text-teal-600 font-bold">{idx + 1}</span>
                       <span className="font-semibold">{med.name}</span>
                       <span className="ml-auto text-xs bg-teal-200 text-teal-800 px-2 py-0.5 rounded-full">Qty: {med.quantity}</span>
+                      <button
+                        className="ml-2 p-1 rounded-full hover:bg-teal-100 transition"
+                        title="Add to Cart"
+                        onClick={e => handleAddToCart(e, med)}
+                        disabled={loading}
+                      >
+                        {/* Cart SVG */}
+                        <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-9V6a2 2 0 10-4 0v7" />
+                        </svg>
+                      </button>
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={handleAddToCart}
-                  className="w-full px-5 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-lg shadow hover:from-green-600 hover:to-green-800 transition"
-                >
-                  Add All to Cart
-                </button>
                 {cartMsg && (
                   <div className="mt-3 text-center text-base font-medium rounded-lg px-3 py-2"
                     style={{
