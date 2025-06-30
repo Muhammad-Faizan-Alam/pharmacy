@@ -18,23 +18,35 @@ const middleware = (request) => {
   const token = request.cookies.get('token')?.value || '';
 
   let isAdmin = false;
+  let isExpired = false;
   if (token) {
     const decoded = decodeJwtPayload(token);
+    console.log(`Decoded JWT: ${JSON.stringify(decoded)}`);
+    
     isAdmin = decoded?.isAdmin;
+    // Check for expiration
+    if (decoded?.exp) {
+      const now = Math.floor(Date.now() / 1000); // current time in seconds
+      isExpired = decoded.exp < now;
+    }
   }
 
   // Restrict admin routes
-  if (isAdminPath && (!token || !isAdmin)) {
+  if (isAdminPath && (!token || !isAdmin || isExpired)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  if (token && isPublicPath) {
-    return NextResponse.redirect(new URL('/', request.url));
-  } else if (!token && !isPublicPath) {
+  // Redirect to login if token is missing or expired and not on public path
+  if ((!token || isExpired) && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', request.url));
-  } else {
-    return NextResponse.next();
   }
+
+  // Redirect logged-in users away from public pages if token is valid and not expired
+  if (token && !isExpired && isPublicPath) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return NextResponse.next();
 };
 
 export default middleware;
