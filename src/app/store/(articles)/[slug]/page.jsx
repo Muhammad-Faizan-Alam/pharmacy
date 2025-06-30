@@ -57,7 +57,7 @@ const ProductCard = ({ product, onClick }) => {
         <p className="text-sm text-blue-600 font-medium">{product.category}</p>
         <h2 className="text-xl font-semibold text-gray-900">{product.name}</h2>
         <p className="text-sm text-gray-600 mt-1">{product.type}</p>
-        <p className="mt-2 text-sm text-gray-700">
+        <p className="mt-2 text-sm h-14 text-gray-700">
           {product.description}
         </p>
         <div className="flex items-center mt-3 space-x-3">
@@ -320,7 +320,7 @@ const ArticleDetailCard = ({ params }) => {
             <div className="flex flex-wrap gap-6 justify-center">
               {currentProducts.length > 0 ? (
                 currentProducts.map(product => (
-                  <div key={product._id} className="hover:scale-105 transition-transform duration-200">
+                  <div key={product._id} className="hover:scale-105 transition-transform duration-800">
                     <ProductCard product={product} onClick={() => setSelectedProduct(product)} />
                   </div>
                 ))
