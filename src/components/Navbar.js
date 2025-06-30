@@ -121,11 +121,11 @@ const Navbar = () => {
         {/* Search Bar - Desktop */}
         <div className="hidden md:flex flex-1 mx-8 max-w-xl bg-secondary rounded-full p-0.5">
           <div className="flex items-center gap-2 px-1">
-            <span className={`font-semibold text-xs sm:text-sm ${toggle ? 'text-teal-500' : 'text-primary'}`}>Search</span>
+            <span className={`font-semibold text-xs text-primary px-1 sm:text-sm rounded-md ${!toggle ? 'border border-primary' : 'border-none'}`}>Search</span>
             <button
               type="button"
               onClick={() => setToggle(t => !t)}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-300 focus:outline-none ${toggle ? 'bg-teal-500' : 'bg-primary'}`}
+              className={`relative w-12 h-6 rounded-full border border-primary transition-colors duration-300 focus:outline-none ${toggle ? 'bg-secondary' : 'bg-primary'}`}
               aria-pressed={toggle}
               aria-label="Toggle AI Search"
             >
@@ -134,7 +134,7 @@ const Navbar = () => {
                 style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
               />
             </button>
-            <span className="font-semibold text-xs sm:text-sm text-primary">AI</span>
+            <span className={`font-semibold text-primary px-1 rounded-md text-xs sm:text-sm ${toggle ? 'border border-primary' : 'border-none'}`}>AI</span>
           </div>
           <form className="relative w-full" onSubmit={handleSearch}>
             <input
