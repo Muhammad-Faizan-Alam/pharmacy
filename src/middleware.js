@@ -21,7 +21,6 @@ const middleware = (request) => {
   let isExpired = false;
   if (token) {
     const decoded = decodeJwtPayload(token);
-    console.log(`Decoded JWT: ${JSON.stringify(decoded)}`);
     
     isAdmin = decoded?.isAdmin;
     // Check for expiration
